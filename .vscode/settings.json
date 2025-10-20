@@ -1,0 +1,27 @@
+{
+    // Configuration PlantUML pour le projet Good Food
+    "plantuml.render": "Local",
+    "plantuml.server": "http://localhost:8080",
+    "plantuml.jar": "C:\\plantuml\\plantuml.jar",
+    "plantuml.exportFormat": "png",
+    "plantuml.exportSubFolder": false,
+    "plantuml.exportOutDir": "C4_Architecture/exports",
+    "plantuml.exportConcurrency": 3,
+    "plantuml.exportMapFile": false,
+    
+    // Prévisualisation
+    "plantuml.previewAutoUpdate": true,
+    "plantuml.previewSnapIndicators": true,
+    
+    // Dossiers d'inclusion
+    "plantuml.includes": [
+        "C4_Architecture/**"
+    ],
+    
+    // Fichiers à exclure de la recherche
+    "files.exclude": {
+        "**/*.png": false,
+        "**/*.svg": false
+    }
+}
+

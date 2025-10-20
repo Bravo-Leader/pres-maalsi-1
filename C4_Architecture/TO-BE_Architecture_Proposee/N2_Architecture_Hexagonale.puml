@@ -1,0 +1,128 @@
+@startuml TO-BE_Architecture_Hexagonale
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Architecture PROPOSÉE - Good Food 3.0\nArchitecture Hexagonale (Onion) - Vue Business
+
+LAYOUT_WITH_LEGEND()
+
+Person(client, "Client", "Utilisateur final")
+Person(franchisé, "Franchisé", "Gérant restaurant")
+Person(admin, "Administrateur", "Supervision")
+Person(livreur, "Livreur", "Assure la livraison")
+
+System_Boundary(hexagonal_platform, "Plateforme Good Food 3.0 - Architecture Hexagonale") {
+    
+    ' Couche externe - Interfaces utilisateur
+    Container(web_app, "Application Web", "React/TypeScript", "Interface web moderne")
+    Container(mobile_app, "Application Mobile", "React Native", "App native iOS/Android")
+    Container(admin_web, "Interface Admin", "React/TypeScript", "Dashboard franchisés")
+    
+    ' Couche externe - Ports d'entrée
+    Container(api_gateway, "Porte d'Entrée", "API Gateway", "• Authentification\n• Rate Limiting\n• Routing")
+    
+    ' Couche application - Cas d'usage
+    Container(use_cases, "Cas d'Usage", "Application Layer", "• Commander un repas\n• Gérer un restaurant\n• Analyser les ventes")
+    
+    ' Couche domaine - Cœur métier
+    Container(domain_services, "Services Métier", "Domain Layer", "• Logique commande\n• Règles tarification\n• Gestion stocks")
+    
+    ' Couche infrastructure - Adaptateurs
+    Container(adapters, "Adaptateurs", "Infrastructure Layer", "• Base de données\n• APIs externes\n• Cache")
+    
+    ' Stockage
+    ContainerDb(database, "Base de Données", "PostgreSQL", "Données transactionnelles")
+    ContainerDb(cache, "Cache", "Redis", "Performance")
+    Container(events, "Événements", "Message Queue", "Communication asynchrone")
+}
+
+' Systèmes externes
+System_Ext(erp, "Dynamics 365", "ERP")
+System_Ext(sage, "Sage Comptabilité", "Comptabilité")
+System_Ext(banque, "Banque BNB", "Paiements")
+System_Ext(tpe, "TP System", "TPE restaurants")
+
+' Relations - Flux entrant
+Rel(client, web_app, "Utilise")
+Rel(client, mobile_app, "Utilise")
+Rel(franchisé, admin_web, "Gère restaurant")
+Rel(admin, admin_web, "Supervise")
+Rel(livreur, mobile_app, "Utilise")
+
+Rel(web_app, api_gateway, "Appels API")
+Rel(mobile_app, api_gateway, "Appels API")
+Rel(admin_web, api_gateway, "Appels API")
+
+Rel(api_gateway, use_cases, "Délègue")
+Rel(use_cases, domain_services, "Utilise")
+Rel(domain_services, adapters, "Persiste")
+
+Rel(adapters, database, "Stocke")
+Rel(adapters, cache, "Cache")
+Rel(adapters, events, "Publie")
+
+' Relations externes
+Rel(adapters, erp, "Synchronise")
+Rel(adapters, sage, "Intègre")
+Rel(adapters, banque, "Paiements")
+Rel(adapters, tpe, "TPE")
+
+note right of hexagonal_platform
+  **AVANTAGES ARCHITECTURE HEXAGONALE:**
+  
+  **Séparation claire**
+  • Métier au centre
+  • Infrastructure à l'extérieur
+  • Testabilité maximale
+  
+  **Indépendance technologique**
+  • Changement de DB sans impact métier
+  • Ajout d'interfaces facile
+  • Évolutivité garantie
+  
+  **Règles métier protégées**
+  • Cœur métier stable
+  • Pas de dépendance externe
+  • Maintenabilité optimale
+end note
+
+note bottom of domain_services
+  **CŒUR MÉTIER (Domain):**
+  
+  **Entités métier**
+  • Commande, Client, Restaurant
+  • Plats, Menus, Promotions
+  
+  **Règles métier**
+  • Validation commandes
+  • Calcul tarifs
+  • Gestion stocks
+  
+  **Services domaine**
+  • Orchestration métier
+  • Logique complexe
+  • Invariants business
+end note
+
+note top of adapters
+  **ADAPTATEURS (Infrastructure):**
+  
+  **Ports sortants**
+  • Persistance (PostgreSQL)
+  • APIs externes (ERP, Sage)
+  • Cache (Redis)
+  
+  **Ports entrants**
+  • REST API
+  • GraphQL
+  • WebSocket
+  
+  **Communication**
+  • Événements
+  • Messages
+  • Notifications
+end note
+
+footer Architecture Hexagonale - Séparation métier/infrastructure | Good Food 3.0
+
+@enduml
+

@@ -1,0 +1,73 @@
+@startuml Persona_Franchise_Business
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title VUE FRANCHISÉ - Gestion Restaurant Good Food 3.0
+
+LAYOUT_WITH_LEGEND()
+
+Person(franchisé, "Franchisé", "Je gère mon restaurant\nefficacement")
+
+System_Boundary(franchise_tools, "Outils Gestion Restaurant Good Food 3.0") {
+    
+    System(dashboard, "Tableau de Bord", "Suivi activité en temps réel")
+    
+    System(order_management, "Gestion Commandes", "• Réception commandes\n• Suivi préparation\n• Statuts livraison")
+    
+    System(menu_management, "Gestion Menus", "• Créer/modifier plats\n• Gérer prix\n• Disponibilités")
+    
+    System(stock_management, "Gestion Stocks", "• Suivi stocks\n• Alertes rupture\n• Commandes fournisseurs")
+    
+    System(analytics, "Analyses & Rapports", "• Ventes par période\n• Plats populaires\n• Performance")
+}
+
+System_Ext(pos, "Logiciel de Caisse", "Commandes comptoir/téléphone")
+System_Ext(suppliers, "Fournisseurs", "Approvisionnement")
+System_Ext(erp, "ERP Good Food", "Synchronisation données")
+
+Rel(franchisé, dashboard, "Consulte activité")
+Rel(franchisé, order_management, "Gère commandes")
+Rel(franchisé, menu_management, "Gère menus")
+Rel(franchisé, stock_management, "Gère stocks")
+Rel(franchisé, analytics, "Consulte rapports")
+
+Rel(pos, order_management, "Commandes saisies")
+Rel(stock_management, suppliers, "Commandes auto")
+Rel(dashboard, erp, "Synchronisation")
+
+note right of franchise_tools
+  **BÉNÉFICES FRANCHISÉ:**
+  
+  **Autonomie**
+  • Gestion complète restaurant
+  • Personnalisation menus
+  • Promotions ciblées
+  
+  **Visibilité**
+  • Commandes temps réel
+  • Stocks à jour
+  • Performance quotidienne
+  
+  **Efficacité**
+  • Alertes automatiques
+  • Gestion simplifiée
+  • Gain de temps
+  
+  **Pilotage**
+  • Analytics avancées
+  • Aide à la décision
+  • ROI mesurable
+end note
+
+note bottom of order_management
+  **GESTION QUOTIDIENNE:**
+  
+  1. Réception commandes (web + mobile + caisse)
+  2. Préparation des plats
+  3. Attribution au livreur
+  4. Suivi jusqu'à livraison
+  5. Validation et clôture
+end note
+
+footer Architecture Business - Vue Franchisé | Good Food 3.0
+
+@enduml

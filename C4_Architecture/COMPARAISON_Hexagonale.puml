@@ -1,0 +1,109 @@
+@startuml Comparaison_Hexagonale
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title COMPARAISON : Architecture Monolithique vs Hexagonale\nGood Food - Évolution Architecturale
+
+LAYOUT_LEFT_RIGHT()
+
+package "🔴 AVANT - Architecture Monolithique" {
+    Person(client_old, "Client", "Site web uniquement")
+    
+    Container(old_monolith, "Application ASP.NET", "Monolithe couplé:\n❌ Tout dans un bloc\n❌ Couplage fort\n❌ Difficile à tester\n❌ Impossible à scaler", $tags="old")
+    
+    ContainerDb(old_db, "SQL Server 2008", "❌ Obsolète\n❌ Pas de réplication", $tags="old")
+    
+    System_Ext(old_sync, "Sync WCF", "1x/jour ❌", $tags="old")
+    
+    Rel(client_old, old_monolith, "Navigation lente")
+    Rel(old_monolith, old_db, "SQL direct")
+    Rel(old_monolith, old_sync, "Sync limitée")
+    
+    note right of old_monolith
+      **PROBLÈMES MONOLITHE:**
+      
+      ❌ **Couplage fort**
+      • UI + Métier + Données mélangés
+      • Changement = impact global
+      • Tests difficiles
+      
+      ❌ **Scalabilité limitée**
+      • Tout ou rien
+      • Ressources partagées
+      • Goulots d'étranglement
+      
+      ❌ **Maintenance complexe**
+      • Code legacy
+      • Dépendances croisées
+      • Déploiements risqués
+    end note
+}
+
+package "🟢 APRÈS - Architecture Hexagonale" {
+    Person(client_new, "Client", "Web + Mobile")
+    Person(franchise_new, "Franchisé", "Dashboard complet")
+    Person(admin_new, "Admin", "Supervision")
+    
+    Container_Boundary(hexagonal_system, "Architecture Hexagonale") {
+        Container(interfaces, "🔌 Interfaces", "Web/Mobile/API", "Points d'entrée")
+        Container(use_cases, "📋 Cas d'Usage", "Application Layer", "Orchestration")
+        Container(domain, "🏢 Domaine", "Business Logic", "Cœur métier")
+        Container(adapters, "🔌 Adaptateurs", "Infrastructure", "Persistance/APIs")
+    }
+    
+    ContainerDb(new_db, "PostgreSQL", "✅ Moderne\n✅ Répliqué", $tags="new")
+    Container(new_cache, "Redis", "✅ Performance", $tags="new")
+    Container(new_events, "Message Queue", "✅ Asynchrone", $tags="new")
+    
+    Rel(client_new, interfaces, "Expérience fluide")
+    Rel(franchise_new, interfaces, "Gestion autonome")
+    Rel(admin_new, interfaces, "Supervision")
+    
+    Rel(interfaces, use_cases, "Délègue")
+    Rel(use_cases, domain, "Utilise")
+    Rel(domain, adapters, "Persiste")
+    
+    Rel(adapters, new_db, "Stocke")
+    Rel(adapters, new_cache, "Cache")
+    Rel(adapters, new_events, "Publie")
+    
+    note right of hexagonal_system
+      **AVANTAGES HEXAGONALE:**
+      
+      ✅ **Séparation claire**
+      • Métier au centre
+      • Infrastructure à l'extérieur
+      • Testabilité maximale
+      
+      ✅ **Indépendance technologique**
+      • Changement DB sans impact
+      • Ajout d'interfaces facile
+      • Évolutivité garantie
+      
+      ✅ **Règles métier protégées**
+      • Cœur métier stable
+      • Pas de dépendance externe
+      • Maintenabilité optimale
+    end note
+}
+
+note as comparison
+  **COMPARAISON CHIFFRÉE**
+  
+  | Critère | Monolithe | Hexagonale | Amélioration |
+  |---------|-----------|------------|--------------|
+  | **Testabilité** | 2/5 | 5/5 | **+150%** |
+  | **Maintenabilité** | 2/5 | 5/5 | **+150%** |
+  | **Évolutivité** | 1/5 | 5/5 | **+400%** |
+  | **Performance** | 3/5 | 5/5 | **+67%** |
+  | **Sécurité** | 2/5 | 5/5 | **+150%** |
+  | **Scalabilité** | 1/5 | 5/5 | **+400%** |
+  | **Coût maintenance** | Élevé | Réduit | **-60%** |
+end note
+
+footer Comparaison Architecturale - Monolithe vs Hexagonale | Good Food
+
+UpdateElementStyle("old", $bgColor="#FFB3B3", $borderColor="#CC0000")
+UpdateElementStyle("new", $bgColor="#B3FFB3", $borderColor="#00AA00")
+
+@enduml
+

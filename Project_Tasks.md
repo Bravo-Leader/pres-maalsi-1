@@ -63,7 +63,7 @@
   - [ ] Performance (temps de réponse, débit)
   - [ ] Disponibilité (uptime, RTO, RPO)
   - [ ] Scalabilité (montée en charge)
-  - [ ] Sécurité (authentification, autorisation, chiffrement)
+  - [ ] Sécurité (authentification, autorisation, chiffrement)ej
   - [ ] Maintenabilité (facilité de maintenance)
   - [ ] Évolutivité (facilité d'évolution)
   - [ ] Interopérabilité (intégration avec l'existant)

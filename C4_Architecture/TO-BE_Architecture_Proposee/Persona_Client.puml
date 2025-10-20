@@ -1,0 +1,68 @@
+@startuml Persona_Client_Business
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title VUE CLIENT - Expérience Utilisateur Good Food 3.0
+
+LAYOUT_WITH_LEGEND()
+
+Person(client, "Client", "Je veux commander\nrapidement et facilement")
+
+System_Boundary(client_experience, "Expérience Client Good Food 3.0") {
+    
+    System(web_mobile, "Interface Web & Mobile", "Commande en ligne\nDisponible partout")
+    
+    System(menu_catalog, "Catalogue & Menus", "• Parcourir les menus\n• Filtrer par préférences\n• Voir disponibilités")
+    
+    System(order_tracking, "Commande & Suivi", "• Passer commande\n• Paiement sécurisé\n• Suivre la livraison")
+    
+    System(notifications, "Notifications", "• Confirmation commande\n• Suivi préparation\n• Livraison en cours")
+}
+
+System_Ext(delivery, "Livraison", "Livreur attribué")
+System_Ext(payment, "Paiement", "Transaction sécurisée")
+
+Rel(client, web_mobile, "Commande via Web ou Mobile")
+Rel(web_mobile, menu_catalog, "Consulte")
+Rel(web_mobile, order_tracking, "Commande et suit")
+Rel(order_tracking, payment, "Paiement sécurisé")
+Rel(order_tracking, delivery, "Attribution livreur")
+Rel(notifications, client, "Reçoit alertes", "SMS / Push / Email")
+
+note right of client_experience
+  **BÉNÉFICES CLIENT:**
+  
+  **Accessibilité**
+  • Web ET Mobile natif
+  • Commande 24/7
+  • Interface intuitive
+  
+  **Rapidité**
+  • Commande en 2 minutes
+  • Temps de réponse < 2s
+  • Paiement rapide
+  
+  **Transparence**
+  • Suivi temps réel
+  • Estimation livraison précise
+  • Historique complet
+  
+  **Personnalisation**
+  • Favoris sauvegardés
+  • Adresses enregistrées
+  • Recommandations
+end note
+
+note bottom of order_tracking
+  **PARCOURS DE COMMANDE:**
+  
+  1. Sélection restaurant et plats
+  2. Validation panier
+  3. Paiement sécurisé
+  4. Suivi préparation
+  5. Suivi livraison temps réel
+  6. Confirmation réception
+end note
+
+footer Architecture Business - Vue Client | Good Food 3.0
+
+@enduml

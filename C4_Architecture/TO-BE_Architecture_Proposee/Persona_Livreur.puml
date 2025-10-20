@@ -1,0 +1,79 @@
+@startuml Persona_Livreur_Business
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title VUE LIVREUR - Application Livraison Good Food 3.0
+
+LAYOUT_WITH_LEGEND()
+
+Person(livreur, "Livreur", "Je livre en sécurité\net efficacement")
+
+System_Boundary(delivery_tools, "Outils Livraison Good Food 3.0") {
+    
+    System(delivery_app, "Application Livreur", "Interface dédiée livraison")
+    
+    System(order_reception, "Réception Livraisons", "• Détails commande\n• Adresse client\n• Instructions")
+    
+    System(navigation, "Navigation Optimisée", "• GPS intelligent\n• Trafic temps réel\n• Optimisation trajets")
+    
+    System(communication, "Communication Client", "• Appels sécurisés\n• SMS automatiques\n• Pas de numéro perso")
+    
+    System(safety, "Sécurité & Urgences", "• Détection accident\n• Appel secours auto\n• Alerte manager")
+}
+
+System_Ext(client, "Client", "Destinataire")
+System_Ext(restaurant, "Restaurant", "Préparation")
+System_Ext(emergency, "Services Secours", "Urgences")
+System_Ext(manager, "Manager", "Supervision")
+
+Rel(livreur, delivery_app, "Utilise application mobile")
+Rel(delivery_app, order_reception, "Reçoit livraisons")
+Rel(order_reception, restaurant, "Récupère commande")
+Rel(delivery_app, navigation, "Navigation")
+Rel(delivery_app, communication, "Contact client")
+Rel(communication, client, "Appel/SMS")
+Rel(delivery_app, safety, "Sécurité active")
+Rel(safety, emergency, "Alerte automatique")
+Rel(safety, manager, "Notification")
+
+note right of delivery_tools
+  **BÉNÉFICES LIVREUR:**
+  
+  **Efficacité**
+  • Application dédiée simple
+  • Navigation optimisée
+  • Itinéraires intelligents
+  
+  **Communication**
+  • Contact client facile
+  • Appels via serveur (VoIP)
+  • Protection numéro perso
+  
+  **Sécurité**
+  • Détection accident auto
+  • Appel secours immédiat
+  • Position partagée manager
+  
+  **Traçabilité**
+  • Historique complet
+  • Preuve de livraison
+  • Protection juridique
+end note
+
+note bottom of safety
+  **SÉCURITÉ AVANCÉE:**
+  
+  **Détection automatique:**
+  • Accident / Chute détectée
+  • Alerte manager immédiate
+  • Appel secours automatique
+  • Géolocalisation précise
+  
+  **Protection:**
+  • Numéro personnel masqué
+  • Communication sécurisée
+  • Enregistrements archivés
+end note
+
+footer Architecture Business - Vue Livreur | Good Food 3.0
+
+@enduml

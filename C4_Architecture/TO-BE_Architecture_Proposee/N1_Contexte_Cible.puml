@@ -1,0 +1,87 @@
+@startuml TO-BE_Contexte_Cible
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Architecture PROPOSÉE (TO-BE) - Good Food 3.0\nNiveau 1 : Vue Contexte (Solution moderne)
+
+LAYOUT_WITH_LEGEND()
+
+' Personas avec leurs bénéfices
+Person(client, "Client", "Commande facilement:\n Web OU Mobile\n Rapide (<2s)\n Sécurisé")
+Person(franchisé, "Franchisé", "Gère efficacement:\n Dashboard temps réel\n Analytics\n Gestion stocks")
+Person(livreur, "Livreur", "Optimise tournées:\n App mobile dédiée\n Itinéraires optimisés\n Suivi temps réel")
+Person(admin, "Administrateur", "Supervise:\n Monitoring 24/7\n Reporting avancé\n Analyses prédictives")
+
+' Système principal moderne
+System(goodfood_new, "Plateforme Good Food 3.0", "Plateforme cloud moderne:\n Web + Mobile\n Performance optimisée\n Haute disponibilité 99.9%\n Scalable (500+ restaurants)", $tags="modern")
+
+' Systèmes externes (améliorés)
+System_Ext(erp, "Dynamics 365", "ERP du groupe\n Sync temps réel")
+System_Ext(sage, "Sage Comptabilité", " Intégration automatisée")
+System_Ext(tpe, "TP System", "TPE restaurants\n Intégration directe")
+System_Ext(bnb, "Banque BNB", " Paiements sécurisés\n API moderne")
+System_Ext(cloud, "Cloud Provider", "AWS / Azure / GCP\n Infrastructure managée")
+System_Ext(analytics, "Outils Analytics", " Aide à la décision\n Reporting avancé")
+System_Ext(pos, "Logiciel de Caisse (POS)", " Commandes téléphone / comptoir\n Planification livraisons")
+
+' Relations optimisées
+Rel(client, goodfood_new, "Web & Mobile", "HTTPS")
+Rel(franchisé, goodfood_new, "Gère en temps réel", "HTTPS")
+Rel(livreur, goodfood_new, "App mobile dédiée", "HTTPS")
+Rel(admin, goodfood_new, "Supervise & Analyse", "HTTPS")
+Rel(client, franchisé, "Commande par téléphone / au comptoir", "Présentiel / Téléphone")
+Rel(franchisé, pos, "Saisit commandes client", "Interface POS")
+
+Rel(goodfood_new, cloud, "Hébergé sur", "Cloud Native")
+Rel(goodfood_new, erp, "Sync temps réel ", "API REST")
+Rel(goodfood_new, sage, "Intégration auto ", "API REST")
+Rel(goodfood_new, tpe, "Paiements intégrés ", "API REST")
+Rel(goodfood_new, bnb, "Paiements sécurisés", "API REST")
+Rel(goodfood_new, analytics, "Données analytics", "API/ETL")
+Rel(goodfood_new, pos, "Import commandes planifiées (pull 5-15 min)", "API REST / Polling")
+Rel(goodfood_new, client, "Confirmation livraison planifiée", "SMS / Push")
+
+Rel(bnb, sage, "Transfert auto", "EBICS")
+Rel(sage, erp, "Sync auto", "API")
+
+note right of goodfood_new
+  **AMÉLIORATIONS MAJEURES:**
+  
+   Application mobile native
+   Performance < 2 secondes
+   Disponibilité 99.9%
+   Synchronisation temps réel
+   Scalabilité automatique
+   Sécurité renforcée (RGPD)
+   Code documenté et testé
+   Architecture évolutive
+end note
+
+note right of pos
+  **Flux commandes POS → Good Food:**
+  
+  1. Client commande au franchisé (téléphone ou comptoir)
+  2. Franchisé saisit dans le logiciel de caisse (POS)
+  3. Good Food 3.0 récupère les nouvelles commandes
+     à intervalle régulier (toutes 5 à 15 minutes)
+  4. Attribution automatique à un livreur
+  5. Confirmation envoyée au client (SMS/Push)
+end note
+
+note left of cloud
+  **INFRASTRUCTURE CLOUD:**
+  
+   Scalabilité automatique
+   Haute disponibilité
+   Sauvegardes automatiques
+   Monitoring 24/7
+   Coûts optimisés
+   Déploiement continu
+end note
+
+footer Architecture TO-BE - Solution moderne et évolutive | Good Food 3.0
+
+UpdateElementStyle("modern", $bgColor="#B3FFB3", $borderColor="#00AA00")
+
+@enduml
+
+

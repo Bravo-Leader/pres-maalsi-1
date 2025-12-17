@@ -1,0 +1,208 @@
+@startuml N2_Container_GoodFood
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Good Food 3.0 - Niveau 2: Conteneurs\nArchitecture Hexagonale Simplifiée
+
+LAYOUT_WITH_LEGEND()
+
+Person(client, "Client", "Utilisateur final")
+Person(livreur, "Livreur", "Livr appeles commandes")
+Person(franchisé, "Franchisé", "Gérant restaurant")
+
+' ====================
+' PRESENTATION LAYER
+' ====================
+System_Boundary(frontend, "🖥️ COUCHE PRÉSENTATION") {
+    Container(web_app, "Application Web", "React + TypeScript", "• Interface client\n• Responsive design\n• PWA offline")
+
+    Container(mobile_app, "App Mobile Client", "React Native", "• iOS + Android\n• Push notifications\n• Géolocalisation")
+
+    Container(driver_app, "App Livreur", "React Native", "• GPS temps réel\n• VoIP intégré\n• Détection accident")
+
+    Container(dashboard, "Dashboard Franchisé", "React + Charts", "• Gestion commandes\n• Analytics\n• Stock")
+}
+
+' ====================
+' API GATEWAY
+' ====================
+Container_Boundary(api_layer, "🔌 COUCHE API (Primary Ports)") {
+    Container(api_gateway, "API Gateway", "Kong/NGINX", "• Routing\n• Rate limiting\n• Auth JWT\n• Load balancing")
+
+    Container(rest_api, "REST API", "Node.js/Express", "• CRUD operations\n• OpenAPI spec\n• Versioning\n• Standard HTTP/JSON")
+}
+
+' ====================
+' CORE SERVICES (Hexagonal)
+' ====================
+System_Boundary(core_services, "🏢 SERVICES MÉTIER (Hexagonal Core)") {
+
+    Container(order_service, "Service Commande", "Node.js", "**Domaine:**\n• Créer commande\n• Valider commande\n• Annuler commande\n\n**Ports:** IOrderRepo, IPayment")
+
+    Container(inventory_service, "Service Stock", "Node.js", "**Domaine:**\n• Réserver stock\n• Alertes rupture\n• Sync POS\n\n**Ports:** IInventoryRepo, IPOS")
+
+    Container(logistics_service, "Service Logistique", "Node.js", "**Domaine:**\n• Assigner livreur\n• Optimiser routes\n• Tracking GPS\n\n**Ports:** IDeliveryRepo, IMaps")
+
+    Container(payment_service, "Service Paiement", "Node.js", "**Domaine:**\n• Traiter paiement\n• Générer facture\n• Rembourser\n\n**Ports:** IPaymentGateway, IInvoice")
+}
+
+' ====================
+' MESSAGE BUS
+' ====================
+Container(event_bus, "Event Bus", "RabbitMQ/Kafka", "**Événements:**\n• OrderCreated\n• PaymentConfirmed\n• DriverAssigned\n• DeliveryCompleted\n\n**Pattern:** Pub/Sub")
+
+' ====================
+' DATA LAYER (Secondary Ports)
+' ====================
+System_Boundary(data_layer, "💾 COUCHE DONNÉES (Secondary Ports)") {
+    ContainerDb(postgres, "PostgreSQL", "Database", "• Commandes\n• Clients\n• Restaurants\n• Transactions")
+
+    ContainerDb(redis, "Redis", "Cache", "• Sessions\n• Paniers\n• Stock temps réel\n• Rate limiting")
+
+    ContainerDb(mongodb, "MongoDB", "NoSQL", "• Logs\n• Events\n• Analytics\n• Audit trail")
+}
+
+' ====================
+' EXTERNAL INTEGRATIONS
+' ====================
+System_Ext(payment_gateway, "BNB Bank", "Paiement CB")
+System_Ext(erp_system, "Dynamics 365", "ERP")
+System_Ext(maps_api, "Google Maps", "GPS/Routes")
+System_Ext(sms_provider, "SMS Gateway", "Notifications")
+
+' ====================
+' RELATIONS: Frontend → API
+' ====================
+Rel(client, web_app, "Uses", "HTTPS")
+Rel(client, mobile_app, "Uses", "HTTPS")
+Rel(livreur, driver_app, "Uses", "HTTPS")
+Rel(franchisé, dashboard, "Uses", "HTTPS")
+
+Rel(web_app, api_gateway, "API calls", "HTTPS/JSON")
+Rel(mobile_app, api_gateway, "API calls", "HTTPS/JSON")
+Rel(driver_app, api_gateway, "API calls", "HTTPS/JSON")
+Rel(dashboard, api_gateway, "API calls", "HTTPS/JSON")
+
+' ====================
+' RELATIONS: API Gateway → REST API
+' ====================
+Rel(api_gateway, rest_api, "Routes", "HTTP")
+
+' ====================
+' RELATIONS: REST API → Services
+' ====================
+Rel(rest_api, order_service, "Commands/Queries", "Internal")
+Rel(rest_api, inventory_service, "Commands/Queries", "Internal")
+Rel(rest_api, logistics_service, "Commands/Queries", "Internal")
+Rel(rest_api, payment_service, "Commands/Queries", "Internal")
+
+' ====================
+' RELATIONS: Services ↔ Event Bus
+' ====================
+Rel(order_service, event_bus, "Publishes events", "AMQP")
+Rel(inventory_service, event_bus, "Publishes events", "AMQP")
+Rel(logistics_service, event_bus, "Publishes events", "AMQP")
+Rel(payment_service, event_bus, "Publishes events", "AMQP")
+
+Rel(event_bus, order_service, "Subscribes to", "AMQP")
+Rel(event_bus, inventory_service, "Subscribes to", "AMQP")
+Rel(event_bus, logistics_service, "Subscribes to", "AMQP")
+Rel(event_bus, payment_service, "Subscribes to", "AMQP")
+
+' ====================
+' RELATIONS: Services → Data
+' ====================
+Rel(order_service, postgres, "Reads/Writes", "SQL")
+Rel(order_service, redis, "Cache", "Redis Protocol")
+Rel(inventory_service, postgres, "Reads/Writes", "SQL")
+Rel(inventory_service, redis, "Cache stock", "Redis Protocol")
+Rel(logistics_service, postgres, "Reads/Writes", "SQL")
+Rel(logistics_service, redis, "Cache locations", "Redis Protocol")
+Rel(payment_service, postgres, "Reads/Writes", "SQL")
+
+Rel(order_service, mongodb, "Logs events", "MongoDB Protocol")
+Rel(inventory_service, mongodb, "Logs events", "MongoDB Protocol")
+Rel(logistics_service, mongodb, "Logs events", "MongoDB Protocol")
+Rel(payment_service, mongodb, "Logs events", "MongoDB Protocol")
+
+' ====================
+' RELATIONS: Services → External
+' ====================
+Rel(payment_service, payment_gateway, "Process payments", "API REST/HTTPS")
+Rel(order_service, erp_system, "Sync orders", "API REST/HTTPS")
+Rel(logistics_service, maps_api, "Calculate routes", "API REST/HTTPS")
+Rel(order_service, sms_provider, "Send SMS", "API REST/HTTPS")
+
+' ====================
+' NOTES
+' ====================
+note right of core_services
+  **ARCHITECTURE HEXAGONALE**
+
+  🏢 **DOMAINE (Centre)**
+  • Logique métier pure
+  • Règles business
+  • Invariants
+  • Sans dépendances infra
+
+  🔌 **PORTS (Interfaces)**
+  • IOrderRepository
+  • IPaymentGateway
+  • IInventoryService
+  • Contrats abstraits
+
+  ⚙️ **ADAPTERS (Implémentation)**
+  • PostgresAdapter
+  • BNBBankAdapter
+  • RabbitMQAdapter
+  • Changeable facilement
+
+  **Avantages:**
+  ✅ Testable unitairement
+  ✅ Technologie agnostique
+  ✅ Évolutif
+  ✅ Maintenable
+end note
+
+note left of event_bus
+  **EVENT-DRIVEN**
+
+  📡 **Communication Async:**
+  • Découplage total
+  • Scalabilité
+  • Résilience
+
+  **Exemple de flux:**
+  1️⃣ OrderCreated event
+     ↓
+  2️⃣ Inventory: Reserve stock
+  3️⃣ Payment: Generate invoice
+  4️⃣ Logistics: Assign driver
+
+  **Retry Policy:**
+  • 3 tentatives
+  • Exponential backoff
+  • Dead letter queue
+end note
+
+note bottom of data_layer
+  **PATTERN CQRS**
+
+  ✍️ **Write Side (PostgreSQL)**
+  • Commandes write
+  • Consistency forte
+  • Transactional
+
+  📖 **Read Side (Redis)**
+  • Queries read optimisées
+  • Eventually consistent
+  • Performance < 10ms
+
+  **Separation:**
+  • Commandes modifient état
+  • Queries lisent projections
+  • Scalabilité indépendante
+end note
+
+footer Good Food 3.0 - N2 Containers | Hexagonal + Microservices + Event-Driven
+
+@enduml

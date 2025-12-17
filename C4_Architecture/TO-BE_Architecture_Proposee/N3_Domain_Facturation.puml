@@ -1,0 +1,323 @@
+@startuml N3_Domain_Facturation
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Domaine FACTURATION (Invoicing) - Architecture Détaillée\nGestion Paiements, Factures et Remboursements
+
+LAYOUT_WITH_LEGEND()
+
+' ============================================
+' PRIMARY ADAPTERS
+' ============================================
+Component(payment_api, "Payment API", "REST", "Payment endpoints")
+Component(invoice_api, "Invoice API", "REST", "Invoice generation")
+Component(webhook_receiver, "Webhook Receiver", "HTTP Handler", "Payment callbacks")
+Component(accounting_api, "Accounting API", "REST", "Export to Sage")
+
+' ============================================
+' COMMAND BUS
+' ============================================
+Container_Boundary(commands_section, "📝 COMMANDS") {
+    Component(command_bus, "Command Bus", "MediatR")
+
+    Component(process_payment_cmd, "ProcessPaymentCommand", "Command", "• orderId\n• amount\n• paymentMethod\n• customerId")
+    Component(confirm_payment_cmd, "ConfirmPaymentCommand", "Command", "• transactionId\n• orderId\n• status")
+    Component(generate_invoice_cmd, "GenerateInvoiceCommand", "Command", "• orderId\n• customerId\n• items[]")
+    Component(issue_refund_cmd, "IssueRefundCommand", "Command", "• orderId\n• amount\n• reason")
+    Component(apply_discount_cmd, "ApplyDiscountCommand", "Command", "• orderId\n• discountCode\n• type")
+    Component(generate_receipt_cmd, "GenerateReceiptCommand", "Command", "• transactionId\n• format (PDF/EMAIL)")
+
+    Component(payment_handler, "ProcessPaymentHandler", "Handler")
+    Component(confirm_handler, "ConfirmPaymentHandler", "Handler")
+    Component(invoice_handler, "GenerateInvoiceHandler", "Handler")
+    Component(refund_handler, "IssueRefundHandler", "Handler")
+    Component(discount_handler, "ApplyDiscountHandler", "Handler")
+}
+
+' ============================================
+' DOMAIN LAYER
+' ============================================
+Container_Boundary(domain, "🏢 DOMAIN LAYER") {
+
+    Container_Boundary(aggregates, "Aggregates") {
+        Component(invoice_aggregate, "Invoice Aggregate", "Aggregate Root", "**State:**\n• invoiceId\n• invoiceNumber\n• orderId\n• customerId\n• items[]\n• subtotal\n• taxAmount\n• totalAmount\n• status\n• issuedAt\n• dueDate\n• paidAt\n\n**Methods:**\n• generate()\n• addLineItem()\n• calculateTax()\n• markAsPaid()\n• cancel()")
+
+        Component(payment_aggregate, "Payment Aggregate", "Aggregate Root", "**State:**\n• paymentId\n• transactionId\n• orderId\n• invoiceId\n• amount\n• method\n• status\n• provider\n• createdAt\n• completedAt\n• failureReason\n\n**Methods:**\n• initiate()\n• confirm()\n• fail()\n• refund()")
+
+        Component(refund_aggregate, "Refund Aggregate", "Aggregate Root", "**State:**\n• refundId\n• paymentId\n• amount\n• reason\n• status\n• requestedAt\n• processedAt\n• method\n\n**Methods:**\n• request()\n• approve()\n• process()\n• reject()")
+
+        Component(ledger_entry, "LedgerEntry", "Entity", "**Double-Entry Bookkeeping:**\n• entryId\n• debitAccount\n• creditAccount\n• amount\n• description\n• timestamp\n• referenceId")
+    }
+
+    Container_Boundary(value_objects, "Value Objects") {
+        Component(money_vo, "Money", "Value Object", "• amount\n• currency\n• format()\n• add()\n• subtract()")
+        Component(tax_vo, "TaxAmount", "Value Object", "• rate\n• amount\n• category\n• calculate()")
+        Component(payment_method_vo, "PaymentMethod", "Value Object", "• type (CARD/CASH/WALLET)\n• details\n• isValid()")
+        Component(discount_vo, "Discount", "Value Object", "• code\n• type (%, FIXED)\n• amount\n• expiresAt\n• apply()")
+    }
+
+    Container_Boundary(domain_services, "Domain Services") {
+        Component(pricing_calculator, "PricingCalculator", "Service", "**Calculates:**\n• Item prices\n• Delivery fees\n• Service charges\n• Platform fees\n\n**Methods:**\n• calculateTotal()\n• applyDiscounts()\n• calculateCommission()")
+
+        Component(tax_calculator, "TaxCalculator", "Service", "**Tax Rules:**\n• VAT 20% (food)\n• VAT 5.5% (drinks)\n• Tax exemptions\n\n**Methods:**\n• calculateVAT()\n• getTaxBreakdown()\n• validateTaxId()")
+
+        Component(payment_processor, "PaymentProcessor", "Service", "**Handles:**\n• 3D Secure\n• Tokenization\n• Fraud detection\n• PCI compliance\n\n**Methods:**\n• process()\n• validate()\n• authorize()\n• capture()")
+
+        Component(refund_calculator, "RefundCalculator", "Service", "**Policies:**\n• Full refund if < 5min\n• 90% if preparing\n• 50% if picked up\n• No refund if delivered\n\n**Methods:**\n• calculateRefund()\n• applyPolicy()\n• checkEligibility()")
+
+        Component(reconciliation_service, "ReconciliationService", "Service", "**Daily Reconciliation:**\n• Match transactions\n• Detect discrepancies\n• Generate reports\n\n**Methods:**\n• reconcile()\n• matchTransactions()\n• flagDiscrepancies()")
+    }
+
+    Container_Boundary(domain_events, "Domain Events") {
+        Component(payment_initiated, "PaymentInitiatedEvent", "Event", "• paymentId\n• orderId\n• amount")
+        Component(payment_confirmed, "PaymentConfirmedEvent", "Event", "• paymentId\n• transactionId")
+        Component(payment_failed, "PaymentFailedEvent", "Event", "• paymentId\n• reason")
+        Component(invoice_generated, "InvoiceGeneratedEvent", "Event", "• invoiceId\n• orderId")
+        Component(refund_processed, "RefundProcessedEvent", "Event", "• refundId\n• amount")
+        Component(commission_calculated, "CommissionCalculatedEvent", "Event", "• orderId\n• commission")
+    }
+
+    Container_Boundary(ports, "Repository Ports") {
+        Component(invoice_repo_port, "IInvoiceRepository", "Port", "• save()\n• findById()\n• findByOrder()\n• findByCustomer()")
+        Component(payment_repo_port, "IPaymentRepository", "Port", "• save()\n• findByTransaction()\n• findPending()")
+        Component(ledger_repo_port, "ILedgerRepository", "Port", "• append()\n• getBalance()\n• auditTrail()")
+    }
+
+    Container_Boundary(external_ports, "External Service Ports") {
+        Component(payment_gateway_port, "IPaymentGateway", "Port", "• charge()\n• refund()\n• getStatus()\n• validateCard()")
+        Component(accounting_port, "IAccountingSystem", "Port", "• exportInvoice()\n• syncTransactions()\n• createJournalEntry()")
+        Component(fraud_detection_port, "IFraudDetection", "Port", "• analyzeTransaction()\n• scoreRisk()\n• blockSuspicious()")
+        Component(invoice_generator_port, "IInvoiceGenerator", "Port", "• generatePDF()\n• sendEmail()\n• archiveDocument()")
+    }
+}
+
+' ============================================
+' QUERY SIDE
+' ============================================
+Container_Boundary(queries_section, "📖 QUERIES") {
+    Component(query_bus, "Query Bus", "MediatR")
+
+    Component(get_invoice_query, "GetInvoiceQuery", "Query", "• invoiceId")
+    Component(payment_status_query, "PaymentStatusQuery", "Query", "• paymentId")
+    Component(transaction_history_query, "TransactionHistoryQuery", "Query", "• customerId\n• dateRange")
+    Component(revenue_report_query, "RevenueReportQuery", "Query", "• restaurantId\n• period")
+
+    Component(invoice_view, "InvoiceView", "Read Model", "Customer invoice")
+    Component(transaction_view, "TransactionView", "Read Model", "Transaction list")
+    Component(revenue_view, "RevenueReportView", "Read Model", "Analytics")
+    Component(read_repo, "InvoicingReadRepository", "Read Store", "Optimized queries")
+}
+
+' ============================================
+' EVENT BUS
+' ============================================
+Component(event_bus, "Event Bus", "RabbitMQ/Kafka")
+
+Container_Boundary(event_subscribers, "Event Subscribers") {
+    Component(order_created_subscriber, "OrderCreatedSubscriber", "Handler", "Generates invoice")
+    Component(payment_webhook_subscriber, "PaymentWebhookSubscriber", "Handler", "Confirms payment")
+    Component(order_cancelled_subscriber, "OrderCancelledSubscriber", "Handler", "Issues refund")
+    Component(accounting_sync, "AccountingSyncHandler", "Handler", "Syncs to Sage")
+    Component(commission_calculator, "CommissionCalculator", "Handler", "Calculates platform fee")
+    Component(projection_updater, "ProjectionUpdater", "Handler", "Updates read models")
+}
+
+' ============================================
+' INFRASTRUCTURE
+' ============================================
+Container_Boundary(infrastructure, "⚙️ INFRASTRUCTURE") {
+    Component(postgres_adapter, "PostgresInvoiceAdapter", "Adapter", "Invoice storage")
+    Component(redis_adapter, "RedisPaymentAdapter", "Adapter", "Payment cache")
+
+    Component(stripe_adapter, "StripePaymentAdapter", "Adapter", "Stripe integration")
+    Component(bnb_adapter, "BNBBankAdapter", "Adapter", "BNB Bank API")
+    Component(sage_adapter, "SageAccountingAdapter", "Adapter", "Export to Sage")
+    Component(fraud_adapter, "FraudDetectionAdapter", "Adapter", "Sift Science")
+    Component(pdf_adapter, "PDFGeneratorAdapter", "Adapter", "Invoice PDFs")
+    Component(email_adapter, "EmailAdapter", "Adapter", "Send invoices")
+}
+
+ContainerDb(postgres_db, "PostgreSQL", "Database", "Invoices & Payments")
+ContainerDb(redis_db, "Redis", "Cache", "Payment sessions")
+ContainerDb(ledger_db, "Ledger DB", "Immutable Log", "Financial audit trail")
+
+System_Ext(stripe, "Stripe", "Payment Gateway")
+System_Ext(bnb_bank, "BNB Bank", "Bank API")
+System_Ext(sage, "Sage", "Accounting Software")
+System_Ext(fraud_service, "Sift Science", "Fraud Detection")
+
+' ============================================
+' EXTERNAL TRIGGERS
+' ============================================
+System_Ext(order_service, "Order Service", "Microservice")
+
+' ============================================
+' FLOW: PROCESS PAYMENT
+' ============================================
+Rel(payment_api, command_bus, "1. ProcessPaymentCommand")
+Rel(command_bus, process_payment_cmd, "2. Routes")
+Rel(process_payment_cmd, payment_handler, "3. Handles")
+
+Rel(payment_handler, fraud_detection_port, "4. Checks fraud")
+Rel(fraud_detection_port, fraud_adapter, "5. Implements")
+Rel(fraud_adapter, fraud_service, "6. Risk score")
+
+Rel(payment_handler, payment_processor, "7. Validates")
+Rel(payment_processor, payment_gateway_port, "8. Process payment")
+Rel(payment_gateway_port, stripe_adapter, "9. Implements")
+Rel(stripe_adapter, stripe, "10. Charges card")
+
+Rel(payment_handler, payment_aggregate, "11. Creates payment")
+Rel(payment_aggregate, payment_initiated, "12. Raises event")
+Rel(payment_aggregate, payment_repo_port, "13. Persists")
+Rel(payment_repo_port, postgres_adapter, "14. Saves")
+Rel(postgres_adapter, postgres_db, "15. Writes")
+
+Rel(payment_initiated, event_bus, "16. Publishes")
+
+' ============================================
+' FLOW: PAYMENT WEBHOOK (Async Confirmation)
+' ============================================
+Rel(stripe, webhook_receiver, "Webhook: payment.succeeded", "HTTPS")
+Rel(webhook_receiver, command_bus, "ConfirmPaymentCommand")
+Rel(command_bus, confirm_payment_cmd, "Routes")
+Rel(confirm_payment_cmd, confirm_handler, "Handles")
+
+Rel(confirm_handler, payment_aggregate, "Confirms payment")
+Rel(payment_aggregate, payment_confirmed, "Raises event")
+
+Rel(payment_confirmed, event_bus, "Publishes")
+Rel(event_bus, projection_updater, "Updates read model")
+Rel(event_bus, accounting_sync, "Syncs to accounting")
+
+Rel(accounting_sync, accounting_port, "Exports transaction")
+Rel(accounting_port, sage_adapter, "Implements")
+Rel(sage_adapter, sage, "Creates journal entry")
+
+' ============================================
+' FLOW: GENERATE INVOICE
+' ============================================
+Rel(order_service, event_bus, "OrderCreatedEvent")
+Rel(event_bus, order_created_subscriber, "Consumes")
+Rel(order_created_subscriber, command_bus, "GenerateInvoiceCommand")
+
+Rel(command_bus, generate_invoice_cmd, "Routes")
+Rel(generate_invoice_cmd, invoice_handler, "Handles")
+
+Rel(invoice_handler, pricing_calculator, "Calculates totals")
+Rel(invoice_handler, tax_calculator, "Calculates taxes")
+Rel(invoice_handler, invoice_aggregate, "Generates invoice")
+
+Rel(invoice_aggregate, invoice_generated, "Raises event")
+Rel(invoice_aggregate, ledger_entry, "Creates ledger entry")
+Rel(ledger_entry, ledger_repo_port, "Appends")
+Rel(ledger_repo_port, postgres_adapter, "Writes")
+Rel(postgres_adapter, ledger_db, "Immutable log")
+
+Rel(invoice_generated, event_bus, "Publishes")
+Rel(event_bus, projection_updater, "Updates")
+
+Rel(invoice_handler, invoice_generator_port, "Generates PDF")
+Rel(invoice_generator_port, pdf_adapter, "Implements")
+Rel(pdf_adapter, email_adapter, "Sends via email")
+
+' ============================================
+' FLOW: ISSUE REFUND
+' ============================================
+Rel(order_service, event_bus, "OrderCancelledEvent")
+Rel(event_bus, order_cancelled_subscriber, "Consumes")
+Rel(order_cancelled_subscriber, command_bus, "IssueRefundCommand")
+
+Rel(command_bus, issue_refund_cmd, "Routes")
+Rel(issue_refund_cmd, refund_handler, "Handles")
+
+Rel(refund_handler, refund_calculator, "Calculates refund amount")
+Rel(refund_handler, refund_aggregate, "Creates refund")
+
+Rel(refund_aggregate, payment_gateway_port, "Processes refund")
+Rel(payment_gateway_port, stripe_adapter, "Implements")
+Rel(stripe_adapter, stripe, "Refunds")
+
+Rel(refund_aggregate, refund_processed, "Raises event")
+Rel(refund_processed, event_bus, "Publishes")
+
+' ============================================
+' FLOW: DAILY RECONCILIATION
+' ============================================
+Component(scheduled_job, "Scheduled Job", "Cron", "Runs daily at 2 AM")
+Rel(scheduled_job, reconciliation_service, "Triggers")
+Rel(reconciliation_service, payment_repo_port, "Fetches transactions")
+Rel(reconciliation_service, accounting_port, "Matches with accounting")
+Rel(reconciliation_service, ledger_repo_port, "Validates ledger")
+
+' ============================================
+' FLOW: QUERY INVOICE
+' ============================================
+Rel(invoice_api, query_bus, "GetInvoiceQuery")
+Rel(query_bus, get_invoice_query, "Routes")
+Rel(get_invoice_query, read_repo, "Reads")
+Rel(read_repo, redis_adapter, "Cache hit")
+Rel(redis_adapter, redis_db, "Fast read")
+
+note right of domain
+  **FINANCIAL RULES:**
+
+  💰 **Payment Processing**
+  • 3D Secure mandatory > 30€
+  • PCI-DSS compliance
+  • Tokenization (no card storage)
+  • Fraud score < 50
+
+  💸 **Refund Policy**
+  • < 5 min: 100% refund
+  • < 30 min: 90% refund
+  • Picked up: 50% refund
+  • Delivered: No refund
+
+  📊 **Commission**
+  • Restaurant: 15% order value
+  • Delivery: 10% delivery fee
+  • Min: 0.50€ per order
+end note
+
+note left of pricing_calculator
+  **PRICING BREAKDOWN:**
+
+  📝 **Line Items**
+  • Item price × quantity
+  • + Delivery fee
+  • + Service charge
+  • - Discount
+  • + VAT (20%)
+
+  **Example Order 45€:**
+  • Items: 35.00€
+  • Delivery: 5.00€
+  • Service: 2.00€
+  • Subtotal: 42.00€
+  • VAT (20%): 8.40€
+  • **Total: 50.40€**
+end note
+
+note bottom of ledger_entry
+  **DOUBLE-ENTRY BOOKKEEPING:**
+
+  **Payment Received:**
+  • DEBIT: Bank Account (+45€)
+  • CREDIT: Revenue (-45€)
+
+  **Refund Issued:**
+  • DEBIT: Revenue (+45€)
+  • CREDIT: Bank Account (-45€)
+
+  **Commission:**
+  • DEBIT: Commission Expense (+6.75€)
+  • CREDIT: Bank Account (-6.75€)
+
+  ✅ **Ledger always balances**
+  ✅ **Immutable audit trail**
+  ✅ **Regulatory compliance**
+end note
+
+footer Domaine FACTURATION - PCI-DSS Compliant Payment Processing | Good Food 3.0
+
+@enduml

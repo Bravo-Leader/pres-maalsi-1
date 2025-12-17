@@ -1,0 +1,153 @@
+@startuml N3a_Stock_Simple
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Service STOCK - N3a: Gestion Inventaire\nRéservation avec TTL Redis
+
+LAYOUT_WITH_LEGEND()
+
+Container(event_bus_ext, "Event Bus", "RabbitMQ")
+
+' ====================
+' PRIMARY ADAPTERS
+' ====================
+Container_Boundary(primary, "PRIMARY ADAPTERS") {
+    Component(stock_api, "Stock API", "REST", "GET /api/stock/:productId\nPOST /api/stock/reserve\nDELETE /api/stock/reserve/:id")
+
+    Component(order_listener, "Order Listener", "RabbitMQ", "• OrderCreated\n→ Réserve stock\n\n• OrderCancelled\n→ Libère stock")
+}
+
+' ====================
+' APPLICATION
+' ====================
+Container_Boundary(application, "APPLICATION") {
+    Component(reserve_usecase, "ReserveStockUseCase", "Use Case", "1. Vérifier disponibilité\n2. Créer réservation (15 min)\n3. Déduire du stock\n4. Publier événement")
+
+    Component(release_usecase, "ReleaseStockUseCase", "Use Case", "1. Annuler réservation\n2. Rajouter au stock\n3. Publier événement")
+}
+
+' ====================
+' DOMAIN
+' ====================
+Container_Boundary(domain, "DOMAIN") {
+    Component(inventory, "Inventory", "Aggregate", "**État:**\n• productId\n• restaurantId\n• available\n• reserved\n• total\n\n**Formule:**\navailable = total - reserved")
+
+    Component(reservation, "Reservation", "Entity", "• reservationId\n• orderId\n• items[]\n• expiresAt (15 min)")
+
+    Component(stock_reserved, "StockReservedEvent", "Event", "• reservationId\n• productId\n• quantity")
+}
+
+' ====================
+' PORTS
+' ====================
+Container_Boundary(ports, "PORTS") {
+    Component(inventory_repo, "IInventoryRepository", "Port", "save() / findByProduct()")
+
+    Component(reservation_repo, "IReservationRepository", "Port", "save() / findById()")
+}
+
+' ====================
+' ADAPTERS
+' ====================
+Container_Boundary(adapters, "ADAPTERS") {
+    Component(postgres_adapter, "PostgresInventoryAdapter", "Adapter", "UPDATE inventory\nSET available = available - :qty")
+
+    Component(redis_adapter, "RedisReservationAdapter", "Adapter", "**SETEX avec TTL:**\nSETEX reservation:uuid 900 '{...}'\n\n**TTL = 15 min (900s)**\nAuto-expire si non confirmé")
+
+    Component(event_publisher, "EventPublisher", "Adapter", "Publish to RabbitMQ")
+}
+
+' ====================
+' INFRA
+' ====================
+ContainerDb(postgres, "PostgreSQL", "DB", "inventory table")
+ContainerDb(redis, "Redis", "Cache", "reservations (TTL)")
+
+' ====================
+' FLOW: RESERVE
+' ====================
+Rel(event_bus_ext, order_listener, "1. OrderCreatedEvent")
+Rel(order_listener, reserve_usecase, "2. Execute")
+
+Rel(reserve_usecase, inventory, "3. Reserve stock")
+Rel(inventory, reservation, "4. Create reservation")
+
+Rel(reserve_usecase, inventory_repo, "5. save()")
+Rel(inventory_repo, postgres_adapter, "6. UPDATE")
+Rel(postgres_adapter, postgres, "7. SQL")
+
+Rel(reserve_usecase, reservation_repo, "8. save()")
+Rel(reservation_repo, redis_adapter, "9. SETEX 900s")
+Rel(redis_adapter, redis, "10. TTL auto-expire")
+
+Rel(inventory, stock_reserved, "11. Raise event")
+Rel(reserve_usecase, event_publisher, "12. publish()")
+Rel(event_publisher, event_bus_ext, "13. Send")
+
+note right of redis_adapter
+  **REDIS TTL AUTO-EXPIRE**
+
+  **Commande:**
+  ```
+  SETEX reservation:abc123 900 '{
+    "orderId": "...",
+    "items": [...],
+    "expiresAt": "..."
+  }'
+  ```
+
+  **Comportement:**
+  • TTL = 900 secondes (15 min)
+  • Redis supprime automatiquement
+  • Pas besoin de job cleanup
+
+  **Si commande confirmée:**
+  • DEL reservation:abc123
+  • Stock définitivement déduit
+
+  **Si 15 min écoulées:**
+  • Redis expire auto
+  • Job cleanup libère stock
+end note
+
+note left of inventory
+  **BUSINESS RULES**
+
+  **Formule:**
+  ```
+  available = total - reserved
+  ```
+
+  **Exemple:**
+  • Total: 100
+  • Reserved: 25
+  • **Available: 75**
+
+  **Réservation:**
+  • Durée: 15 minutes
+  • Auto-expire (Redis TTL)
+  • Libéré si annulé
+
+  **Alerte:**
+  • Si available < 10
+  • Email au restaurant
+end note
+
+note as flow
+  **FLUX RÉSERVATION**
+
+  1️⃣ OrderCreated event reçu
+  2️⃣ Use Case réserve stock
+  3️⃣ Postgres: total - reserved
+  4️⃣ Redis: SETEX 15 min
+  5️⃣ StockReservedEvent publié
+
+  **Après 15 minutes:**
+  • Redis expire automatiquement
+  • Job vérifie et libère stock
+
+  ⏱️ **Temps:** < 100ms
+end note
+
+footer Service STOCK - N3a: Simple Inventory | Redis TTL Pattern
+
+@enduml

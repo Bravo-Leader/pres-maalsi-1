@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Good Food 3.0 - Présentation Slides</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 40px 60px;
+            background: var(--bg-gradient);
+            color: white;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .slide-number {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: 3px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            margin: 15px 0 10px;
+            color: #fff;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .slide-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            height: 100%;
+        }
+
+        .three-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            height: 100%;
+        }
+
+        .four-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .diagram-container {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+        }
+
+        .diagram-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .diagram-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .zoom-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .zoom-icon:hover {
+            background: rgba(41, 128, 185, 1);
+            transform: scale(1.1);
+        }
+
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .zoom-modal.active {
+            display: flex;
+        }
+
+        .zoom-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-content img {
+            max-width: 100%;
+            max-height: 95vh;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .zoom-content img.zoomed {
+            cursor: zoom-out;
+            transform: scale(1.5);
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .zoom-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .close-zoom {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.8);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .close-zoom:hover {
+            background: rgba(192, 57, 43, 1);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            line-height: 1.6;
+        }
+
+        li {
+            margin: 8px 0;
+            font-size: 1em;
+        }
+
+        .big-number {
+            font-size: 4em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 3px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .badge-critical { background: #e74c3c; }
+        .badge-high { background: #f39c12; }
+        .badge-success { background: #27ae60; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.9em;
+        }
+
+        th {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 1000;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .architecture-layer {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid white;
+        }
+
+        .score-high {
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .score-low {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 4.5em;
+            margin-bottom: 25px;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.8em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .scrollable-content {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        @media print {
+            .navigation, .slide-indicator, .progress-bar {
+                display: none;
+            }
+            .slide {
+                page-break-after: always;
+                display: block !important;
+                position: relative;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <!-- SLIDE 1: PAGE DE TITRE -->
+        <div class="slide active title-slide" data-slide="1">
+            <h1>Architecture Good Food 3.0</h1>
+            <p class="subtitle">Projet Collaboratif - Architecture Logicielle</p>
+            <p style="font-size: 1.3em; margin-top: 80px;">CESI MAALSI - INFMAALSIAPC1</p>
+            <p style="font-size: 1.1em; margin-top: 15px; opacity: 0.8;">Présentation Professionnelle</p>
+        </div>
+
+        <!-- SLIDE 2: CONTEXTE ACTUEL (AS-IS) -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <div class="slide-number">Slide 2/25</div>
+                <h2>📊 Analyse de l'Existant (AS-IS)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>Schéma du SI Existant</h3>
+                        <div class="diagram-container">
+                            <img src="C4_Architecture/exports/slide2-as-is-contexte.png" alt="Architecture AS-IS Contexte" style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                    <div class="content-box">
+                        <h3>Applications et Interactions</h3>
+                        <ul style="font-size: 0.95em;">
+                            <li><strong>Site Web:</strong> ASP.NET 2005 (obsolète)</li>
+                            <li><strong>ERP:</strong> Dynamics 365</li>
+                            <li><strong>Sage:</strong> Comptabilité</li>
+                            <li><strong>Sync:</strong> 1x/jour (problématique)</li>
+                        </ul>
+                        <div style="margin-top: 25px;">
+                            <h3>Points Critiques</h3>
+                            <span class="badge badge-critical">Technologie obsolète</span>
+                            <span class="badge badge-critical">Performance < 5s</span>
+                            <span class="badge badge-critical">Pas d'app mobile</span>
+                            <span class="badge badge-critical">Non-conformité RGPD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Good Food 3.0 - Architecture Logicielle</span>
+                <span>CESI MAALSI</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: ARCHITECTURE ACTUELLE DÉTAILLÉE -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <div class="slide-number">Slide 3/25</div>
+                <h2>🏗️ Architecture Technique Actuelle (N2)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide3-as-is-architecture.png" alt="Architecture AS-IS N2" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Système existant - Limitations majeures</span>
+                <span>Slide 3/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: EXIGENCES NON-FONCTIONNELLES -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <div class="slide-number">Slide 4/25</div>
+                <h2>🎯 Exigences Non-Fonctionnelles</h2>
+            </div>
+            <div class="slide-content">
+                <div class="scrollable-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exigence</th>
+                                <th>Priorité</th>
+                                <th>Objectif Quantifié</th>
+                                <th>Impact Architecture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>95% pages < 1s</td>
+                                <td>Cache Redis, CDN</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Disponibilité</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>≥ 99.9% uptime</td>
+                                <td>Load balancing, réplication</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sécurité & RGPD</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>100% OAuth2</td>
+                                <td>HTTPS, WAF, auth</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scalabilité</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>150 → 500+ restos</td>
+                                <td>Microservices, K8s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maintenabilité</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>80% tests</td>
+                                <td>Architecture hexagonale</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Interopérabilité</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>Sync < 5 min</td>
+                                <td>APIs REST, événements</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="grid-stats" style="margin-top: 15px;">
+                        <div class="stat-card">
+                            <div class="stat-number">6.3</div>
+                            <div class="stat-label">Performance<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5.8</div>
+                            <div class="stat-label">Interopérabilité<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3.4</div>
+                            <div class="stat-label">Disponibilité<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2.4</div>
+                            <div class="stat-label">Scalabilité<br>Score RICE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Exigences clairement définies avec métriques mesurables</span>
+                <span>Slide 4/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: DÉMARCHE DE CONCEPTION -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <div class="slide-number">Slide 5/25</div>
+                <h2>🎨 Démarche de Conception Architecture</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="scrollable-content">
+                        <h3>Méthodologie: C4 Model + TOGAF</h3>
+                        <div class="architecture-layer">
+                            <strong>Phase 1: Analyse</strong> (J1-2)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Étude du contexte</li>
+                                <li>Besoins métier</li>
+                                <li>Analyse exigences</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 2: Architecture Métier</strong> (J2)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Cartographie écosystème</li>
+                                <li>Vue stratégique</li>
+                                <li>C4 Niveau 1</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 3: Architecture Applicative</strong> (J3)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Décomposition services</li>
+                                <li>Choix technologies</li>
+                                <li>C4 Niveau 2</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scrollable-content">
+                        <div class="architecture-layer">
+                            <strong>Phase 4: Architecture Technique</strong> (J3-4)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Détail composants</li>
+                                <li>Architecture hexagonale</li>
+                                <li>C4 Niveau 3</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 5: Comparaison</strong> (J4)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Évaluation styles</li>
+                                <li>Matrices décision</li>
+                                <li>Justification choix</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 6: Validation</strong> (J5)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Vérification cohérence</li>
+                                <li>Documentation finale</li>
+                                <li>Présentation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Démarche cohérente avec les activités d'architecture logicielle</span>
+                <span>Slide 5/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: COMPARAISON STYLES ARCHITECTURAUX -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <div class="slide-number">Slide 6/25</div>
+                <h2>⚖️ Comparaison des Styles Architecturaux</h2>
+            </div>
+            <div class="slide-content">
+                <div class="scrollable-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Style</th>
+                                <th>Perf</th>
+                                <th>Scale</th>
+                                <th>Maint</th>
+                                <th>Évol</th>
+                                <th>Comp</th>
+                                <th>Coût</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monolithique</td>
+                                <td>4/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>5/5</td>
+                                <td class="score-low">17/30 ❌</td>
+                            </tr>
+                            <tr>
+                                <td>En Couches</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>4/5</td>
+                                <td>19/30</td>
+                            </tr>
+                            <tr>
+                                <td>SOA</td>
+                                <td>3/5</td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>21/30</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Microservices</strong></td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td class="score-high">23/30 ✅</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Hexagonale</strong></td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td class="score-high">24/30 ✅</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Event-Driven</strong></td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td class="score-high">23/30 ✅</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 30px; text-align: center;">
+                        <h3>✅ Architecture Retenue</h3>
+                        <p style="font-size: 1.3em; margin-top: 15px;">
+                            <span class="highlight">Microservices</span> +
+                            <span class="highlight">Hexagonale</span> +
+                            <span class="highlight">Event-Driven</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Comparaison tenant compte des exigences non-fonctionnelles</span>
+                <span>Slide 6/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: JUSTIFICATION DES CHOIX -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <div class="slide-number">Slide 7/25</div>
+                <h2>✅ Justification des Choix Architecturaux</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box scrollable-content">
+                        <h3>🏗️ Microservices</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Scalabilité:</strong> 150 → 500+ restos</li>
+                            <li><strong>Résilience:</strong> Isolation pannes</li>
+                            <li><strong>Évolutivité:</strong> Nouveaux services</li>
+                            <li><strong>Équipes:</strong> Autonomie</li>
+                        </ul>
+                    </div>
+                    <div class="content-box scrollable-content">
+                        <h3>⬡ Hexagonale</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Testabilité:</strong> Cœur isolé</li>
+                            <li><strong>Indépendance:</strong> Technologie</li>
+                            <li><strong>Clarté:</strong> Métier/infra</li>
+                            <li><strong>Évolution:</strong> Adapter métier</li>
+                        </ul>
+                    </div>
+                    <div class="content-box scrollable-content">
+                        <h3>⚡ Event-Driven</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Découplage:</strong> Async</li>
+                            <li><strong>Performance:</strong> Background</li>
+                            <li><strong>Traçabilité:</strong> Event Store</li>
+                            <li><strong>Sync ERP:</strong> Temps réel</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>❌ Pourquoi PAS Monolithique ?</h3>
+                    <div class="content-box" style="background: rgba(231, 76, 60, 0.2);">
+                        <ul style="font-size: 0.95em;">
+                            <li>Scalabilité insuffisante (2/5) → Impossible 500+ restaurants</li>
+                            <li>Maintenabilité faible (2/5) → Reproduirait code legacy</li>
+                            <li>Évolutivité limitée (2/5) → Déploiements risqués</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Choix cohérents avec le contexte Good Food</span>
+                <span>Slide 7/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: ARCHITECTURE CIBLE (TO-BE) CONTEXTE -->
+        <div class="slide" data-slide="8">
+            <div class="slide-header">
+                <div class="slide-number">Slide 8/25</div>
+                <h2>🎯 Architecture Cible (TO-BE) - Contexte</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide8-to-be-contexte.png" alt="Architecture TO-BE Contexte" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Nouvel écosystème Good Food 3.0</span>
+                <span>Slide 8/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: ARCHITECTURE HEXAGONALE -->
+        <div class="slide" data-slide="9">
+            <div class="slide-header">
+                <div class="slide-number">Slide 9/25</div>
+                <h2>⬡ Architecture Hexagonale Détaillée (N2)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide9-hexagonale.png" alt="Architecture Hexagonale" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Séparation claire métier/infrastructure</span>
+                <span>Slide 9/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: DÉTAIL SERVICE COMMANDE -->
+        <div class="slide" data-slide="10">
+            <div class="slide-header">
+                <div class="slide-number">Slide 10/25</div>
+                <h2>🛒 Détail Service Commande (N3)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide10-detail-commande.png" alt="Détail Service Commande" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Exemple: Domaine, Ports, Adapters</span>
+                <span>Slide 10/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: PERSONA CLIENT -->
+        <div class="slide" data-slide="11">
+            <div class="slide-header">
+                <div class="slide-number">Slide 11/25</div>
+                <h2>👤 Vue Client - Expérience Utilisateur</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide11-persona-client.png" alt="Persona Client" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Expérience fluide Web + Mobile</span>
+                <span>Slide 11/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: PERSONA FRANCHISE -->
+        <div class="slide" data-slide="12">
+            <div class="slide-header">
+                <div class="slide-number">Slide 12/25</div>
+                <h2>🏪 Vue Franchisé - Gestion Restaurant</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide12-persona-franchise.png" alt="Persona Franchisé" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Dashboard temps réel et gestion autonome</span>
+                <span>Slide 12/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: PERSONA LIVREUR -->
+        <div class="slide" data-slide="13">
+            <div class="slide-header">
+                <div class="slide-number">Slide 13/25</div>
+                <h2>🚴 Vue Livreur - Livraison Sécurisée</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide13-persona-livreur.png" alt="Persona Livreur" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>VoIP entreprise, GPS, détection accident</span>
+                <span>Slide 13/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: PERSONA ADMINISTRATEUR -->
+        <div class="slide" data-slide="14">
+            <div class="slide-header">
+                <div class="slide-number">Slide 14/25</div>
+                <h2>👨‍💼 Vue Administrateur - Supervision Réseau</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide14-persona-admin.png" alt="Persona Administrateur" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Monitoring proactif et configuration centralisée</span>
+                <span>Slide 14/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: COMPARAISON AVANT/APRÈS -->
+        <div class="slide" data-slide="15">
+            <div class="slide-header">
+                <div class="slide-number">Slide 15/25</div>
+                <h2>🔄 Comparaison Avant/Après</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="C4_Architecture/exports/slide15-comparaison.png" alt="Comparaison Avant/Après" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Impact quantifié de la nouvelle architecture</span>
+                <span>Slide 15/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 16-25: Keep remaining slides as is, just remove scrollable-content where not needed -->
+
+        <!-- SLIDE 16: CHOIX TECHNOLOGIQUES -->
+        <div class="slide" data-slide="16">
+            <div class="slide-header">
+                <div class="slide-number">Slide 16/25</div>
+                <h2>🔧 Matrice de Choix Technologiques</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>Critères (100%)</h3>
+                        <table style="font-size: 0.85em;">
+                            <tr><td><strong>Fonctionnalités</strong></td><td>25%</td></tr>
+                            <tr><td><strong>Performance</strong></td><td>20%</td></tr>
+                            <tr><td><strong>Coût</strong></td><td>15%</td></tr>
+                            <tr><td><strong>Maturité</strong></td><td>15%</td></tr>
+                            <tr><td><strong>Facilité</strong></td><td>10%</td></tr>
+                            <tr><td><strong>Évolutivité</strong></td><td>10%</td></tr>
+                            <tr><td><strong>Intégration</strong></td><td>5%</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Exemple: Cloud</h3>
+                        <table style="font-size: 0.85em;">
+                            <thead>
+                                <tr><th>Critère</th><th>AWS</th><th>Azure</th><th>GCP</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Fonct.</td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr><td>Perf.</td><td>5</td><td>5</td><td>5</td></tr>
+                                <tr><td>Coût</td><td>3</td><td>4</td><td>4</td></tr>
+                                <tr><td>Maturité</td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total</strong></td>
+                                    <td class="score-high">4.45 ✅</td>
+                                    <td>4.35</td>
+                                    <td>4.25</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 15px; font-size: 1em;">
+                            <span class="badge badge-success">Choix: AWS</span>
+                            <br><small>Leader marché, services complets</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Justification des choix avec critères cohérents</span>
+                <span>Slide 16/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: STACK TECHNOLOGIQUE -->
+        <div class="slide" data-slide="17">
+            <div class="slide-header">
+                <div class="slide-number">Slide 17/25</div>
+                <h2>🛠️ Stack Technologique Complète</h2>
+            </div>
+            <div class="slide-content">
+                <table>
+                    <thead>
+                        <tr><th>Couche</th><th>Technologie</th><th>Justification</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Frontend Web</strong></td><td>React + TypeScript</td><td>Écosystème riche</td></tr>
+                        <tr><td><strong>Frontend Mobile</strong></td><td>React Native</td><td>Code partagé</td></tr>
+                        <tr><td><strong>Backend</strong></td><td>Node.js + Express</td><td>Full-stack JS</td></tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Base Données</strong></td><td>PostgreSQL</td><td>Open source, performant (4.85)</td>
+                        </tr>
+                        <tr><td><strong>Cache</strong></td><td>Redis</td><td>Structures riches</td></tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Message Queue</strong></td><td>Kafka + RabbitMQ</td><td>Hybride optimal</td>
+                        </tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Cloud</strong></td><td>AWS</td><td>Leader marché (4.45)</td>
+                        </tr>
+                        <tr><td><strong>Orchestration</strong></td><td>Kubernetes (EKS)</td><td>Standard industrie</td></tr>
+                        <tr><td><strong>CI/CD</strong></td><td>GitHub Actions</td><td>Intégration native</td></tr>
+                        <tr><td><strong>Monitoring</strong></td><td>Prometheus + Grafana</td><td>Open source</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <span>Stack complète justifiée par matrices</span>
+                <span>Slide 17/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: POINTS FAIBLES SI -->
+        <div class="slide" data-slide="18">
+            <div class="slide-header">
+                <div class="slide-number">Slide 18/25</div>
+                <h2>🔴 Points Faibles du SI Actuel</h2>
+            </div>
+            <div class="slide-content">
+                <table>
+                    <thead>
+                        <tr><th>Point Faible</th><th>Impact</th><th>Preuve</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Technologie obsolète</strong></td>
+                            <td><span class="badge badge-critical">Critique</span></td>
+                            <td>Windows 2008 R2 hors support, ASP.NET 2005</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Code non maintenable</strong></td>
+                            <td><span class="badge badge-critical">Critique</span></td>
+                            <td>Patchs sur patchs, aucune doc</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pas d'app mobile</strong></td>
+                            <td><span class="badge badge-high">Haute</span></td>
+                            <td>80% trafic mobile, perte CA -25%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Performance dégradée</strong></td>
+                            <td><span class="badge badge-high">Haute</span></td>
+                            <td>Temps > 5s, abandon 45% vs 30%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sync 1x/jour</strong></td>
+                            <td><span class="badge badge-high">Haute</span></td>
+                            <td>Données J-1, erreurs stock</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mono-hébergeur</strong></td>
+                            <td><span class="badge badge-high">Haute</span></td>
+                            <td>SPOF, panne 48h coût 150K€</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Non chiffré</strong></td>
+                            <td><span class="badge badge-critical">Critique</span></td>
+                            <td>Non-RGPD, risque amende 4% CA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pas PCI-DSS</strong></td>
+                            <td><span class="badge badge-critical">Critique</span></td>
+                            <td>Échec paiement 18% vs 2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <span>Points faibles identifiés et justifiés</span>
+                <span>Slide 18/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: AXES D'AMÉLIORATION -->
+        <div class="slide" data-slide="19">
+            <div class="slide-header">
+                <div class="slide-number">Slide 19/25</div>
+                <h2>💡 Axes d'Amélioration Prioritaires</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box">
+                        <h3>1. Migration Cloud</h3>
+                        <p><strong>→</strong> AWS Multi-AZ</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Dispo: 99.9%</li>
+                            <li>Scalabilité auto</li>
+                            <li>Coût: -30%/3ans</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>2. DevOps CI/CD</h3>
+                        <p><strong>→</strong> Pipeline auto</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>10+ déplois/sem</li>
+                            <li>-80% bugs prod</li>
+                            <li>TTM 5x</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>3. Observabilité</h3>
+                        <p><strong>→</strong> Prometheus</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Détection < 2min</li>
+                            <li>MTTR < 15min</li>
+                            <li>Visibilité 360°</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>4. Sécurité</h3>
+                        <p><strong>→</strong> WAF + Chiffrement</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>RGPD 100%</li>
+                            <li>Confiance client</li>
+                            <li>Risque éliminé</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>5. Documentation</h3>
+                        <p><strong>→</strong> Doc complète</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Onboard 2sem</li>
+                            <li>Autonomie</li>
+                            <li>Maintenabilité</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>6. Tests</h3>
+                        <p><strong>→</strong> Couverture 80%</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Bugs -80%</li>
+                            <li>Confiance</li>
+                            <li>Refactoring safe</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Recommandations avec bénéfices quantifiés</span>
+                <span>Slide 19/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 20: ROI -->
+        <div class="slide" data-slide="20">
+            <div class="slide-header">
+                <div class="slide-number">Slide 20/25</div>
+                <h2>💰 ROI et Bénéfices Attendus</h2>
+            </div>
+            <div class="slide-content">
+                <div class="grid-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Disponibilité<br>vs 95%<br>+4.9pts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">< 2s</div>
+                        <div class="stat-label">Performance<br>vs > 5s<br>-60%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">-30%</div>
+                        <div class="stat-label">Coût IT<br>sur 3 ans<br>cloud</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">-80%</div>
+                        <div class="stat-label">Bugs Prod<br>tests<br>CI/CD</div>
+                    </div>
+                </div>
+                <div style="margin-top: 25px;">
+                    <h3>✅ ROI Global</h3>
+                    <div class="content-box">
+                        <ul style="font-size: 1.05em; line-height: 1.8;">
+                            <li><strong>CA:</strong> +25% (mobile, perf)</li>
+                            <li><strong>Coûts IT:</strong> -30%/3ans (cloud)</li>
+                            <li><strong>Maintenance:</strong> -60% (tests, doc)</li>
+                            <li><strong>Pannes:</strong> -90% (monitoring)</li>
+                            <li><strong>TTM:</strong> 5x plus rapide</li>
+                            <li><strong>Satisfaction:</strong> +40%</li>
+                        </ul>
+                        <div class="big-number" style="color: #2ecc71; margin-top: 20px;">350%</div>
+                        <p style="text-align: center; font-size: 1.3em;"><strong>ROI sur 3 ans</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Bénéfices quantifiés et ROI démontré</span>
+                <span>Slide 20/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 21: ORGANISATION ÉQUIPE -->
+        <div class="slide" data-slide="21">
+            <div class="slide-header">
+                <div class="slide-number">Slide 21/25</div>
+                <h2>👥 Organisation de l'Équipe</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box">
+                        <h3>👨‍💼 Chef Projet</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Coordination</li>
+                            <li>Planification</li>
+                            <li>Communication</li>
+                            <li>Gestion risques</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>🏗️ Archi Applic</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Conception</li>
+                            <li>Microservices</li>
+                            <li>Design patterns</li>
+                            <li>Hexagonale</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>☁️ Archi Infra</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Cloud AWS</li>
+                            <li>Kubernetes</li>
+                            <li>Scalabilité</li>
+                            <li>DevOps CI/CD</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>🔒 Sécu</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Archi sécurité</li>
+                            <li>RGPD</li>
+                            <li>Auth/autor</li>
+                            <li>Tests vulné</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>📊 Perf</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Exigences NFR</li>
+                            <li>Tests charge</li>
+                            <li>Optimisations</li>
+                            <li>Monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>📝 Doc</h3>
+                        <ul style="font-size: 0.85em;">
+                            <li>Doc technique</li>
+                            <li>Diagrammes C4</li>
+                            <li>Présentation</li>
+                            <li>ADR</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="content-box">
+                        <strong>Méthodologie:</strong> Agile (sprints 1 sem, stand-ups) •
+                        <strong>Outils:</strong> Teams, Trello, Git •
+                        <strong>Décisions:</strong> Matrices, vote, ADR
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Équipe structurée avec compétences complémentaires</span>
+                <span>Slide 21/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 22: POINTS FORTS ÉQUIPE -->
+        <div class="slide" data-slide="22">
+            <div class="slide-header">
+                <div class="slide-number">Slide 22/25</div>
+                <h2>💪 Points Forts de l'Équipe</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box">
+                        <h3>✅ Compétences</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Mix technique/métier</li>
+                            <li>Couverture complète</li>
+                            <li>Expériences variées</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>✅ Méthodologie</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Modèle C4</li>
+                            <li>Approche progressive</li>
+                            <li>Doc systématique</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>✅ Communication</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Stand-ups quotidiens</li>
+                            <li>Outils collaboratifs</li>
+                            <li>Feedback régulier</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>✅ Orientation User</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Diagrammes business</li>
+                            <li>Langage simple</li>
+                            <li>Focus valeur</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>✅ Pragmatisme</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Théorie/pratique</li>
+                            <li>Solutions réalistes</li>
+                            <li>Priorisation RICE</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>✅ Agilité</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li>Capacité pivoter</li>
+                            <li>Réactivité</li>
+                            <li>Amélioration continue</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Équipe performante et organisée</span>
+                <span>Slide 22/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 23: AXES AMÉLIORATION ÉQUIPE -->
+        <div class="slide" data-slide="23">
+            <div class="slide-header">
+                <div class="slide-number">Slide 23/25</div>
+                <h2>🎯 Axes d'Amélioration de l'Équipe</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="scrollable-content">
+                        <div class="content-box" style="background: rgba(241, 196, 15, 0.2); margin-bottom: 15px;">
+                            <h3>⚠️ 1. Gestion Temps</h3>
+                            <p><strong>Amélioration:</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>Sprints courts + revues</li>
+                                <li>Buffer 20%</li>
+                                <li>Planning poker</li>
+                            </ul>
+                        </div>
+                        <div class="content-box" style="background: rgba(241, 196, 15, 0.2);">
+                            <h3>⚠️ 2. Expérience Cloud</h3>
+                            <p><strong>Amélioration:</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>Formation AWS</li>
+                                <li>POC environnement test</li>
+                                <li>Mentorat senior</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scrollable-content">
+                        <div class="content-box" style="background: rgba(241, 196, 15, 0.2); margin-bottom: 15px;">
+                            <h3>⚠️ 3. Tests Performance</h3>
+                            <p><strong>Amélioration:</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>Formation K6/JMeter</li>
+                                <li>Expert externe</li>
+                                <li>Intégration CI/CD</li>
+                            </ul>
+                        </div>
+                        <div class="content-box" style="background: rgba(241, 196, 15, 0.2);">
+                            <h3>⚠️ 4. RGPD</h3>
+                            <p><strong>Amélioration:</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>Audit externe</li>
+                                <li>Formation équipe</li>
+                                <li>DPO dédié</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="content-box">
+                        <strong>Recommandations:</strong> Formations continues • Revues code • Renforcement équipe (expert sécu, DevOps senior, PO, Coach Agile)
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Axes d'amélioration avec actions concrètes</span>
+                <span>Slide 23/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 24: RÉSUMÉ EXÉCUTIF -->
+        <div class="slide" data-slide="24">
+            <div class="slide-header">
+                <div class="slide-number">Slide 24/25</div>
+                <h2>📊 Résumé Exécutif</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>✅ Architecture Retenue</h3>
+                        <div class="content-box" style="background: rgba(46, 204, 113, 0.2);">
+                            <p style="font-size: 1.2em; margin-bottom: 15px;">
+                                <strong>Microservices + Hexagonale + Event-Driven</strong>
+                            </p>
+                            <ul style="font-size: 1em;">
+                                <li>Score: 23-24/30</li>
+                                <li>Scale: 150 → 500+ restos</li>
+                                <li>Perf: < 2s</li>
+                                <li>Dispo: 99.9%</li>
+                                <li>Tests: 80%</li>
+                            </ul>
+                        </div>
+
+                        <h3 style="margin-top: 20px;">🛠️ Stack</h3>
+                        <div class="content-box">
+                            <ul style="font-size: 0.95em;">
+                                <li><strong>Front:</strong> React + React Native</li>
+                                <li><strong>Back:</strong> Node.js + Express</li>
+                                <li><strong>Data:</strong> PostgreSQL + Redis + Kafka</li>
+                                <li><strong>Cloud:</strong> AWS + Kubernetes</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📈 Bénéfices</h3>
+                        <div class="grid-stats" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-number">+25%</div>
+                                <div class="stat-label">CA</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">-30%</div>
+                                <div class="stat-label">Coûts IT</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">-80%</div>
+                                <div class="stat-label">Bugs</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">5x</div>
+                                <div class="stat-label">TTM</div>
+                            </div>
+                        </div>
+
+                        <div class="content-box" style="margin-top: 20px; background: rgba(52, 152, 219, 0.2);">
+                            <div class="big-number" style="font-size: 3.5em; color: #2ecc71;">350%</div>
+                            <p style="text-align: center; font-size: 1.2em;"><strong>ROI / 3 ans</strong></p>
+                        </div>
+
+                        <h3 style="margin-top: 15px;">🎯 Prochaines Étapes</h3>
+                        <div class="content-box">
+                            <ol style="font-size: 0.95em;">
+                                <li>Validation direction</li>
+                                <li>POC (2 mois)</li>
+                                <li>Développement (12 mois)</li>
+                                <li>Migration progressive</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Architecture moderne, scalable et sécurisée</span>
+                <span>Slide 24/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 25: QUESTIONS -->
+        <div class="slide title-slide" data-slide="25">
+            <h1 style="font-size: 3.5em;">Questions ?</h1>
+            <div style="margin-top: 60px; font-size: 1.2em; line-height: 2;">
+                <p><strong>Équipe Projet Good Food 3.0</strong></p>
+                <p style="opacity: 0.8; margin-top: 25px;">CESI MAALSI - INFMAALSIAPC1</p>
+                <p style="opacity: 0.8;">Architecture Logicielle</p>
+                <p style="margin-top: 40px; font-size: 1em; opacity: 0.7;">
+                    Merci de votre attention !
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◀ Précédent</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Suivant ▶</button>
+    </div>
+
+    <!-- INDICATEURS -->
+    <div class="slide-indicator" id="slideIndicator"></div>
+
+    <!-- ZOOM MODAL -->
+    <div class="zoom-modal" id="zoomModal">
+        <div class="close-zoom" onclick="closeZoom()">✕</div>
+        <div class="zoom-content" id="zoomContent">
+            <img id="zoomImage" src="" alt="Zoomed diagram">
+        </div>
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+            <button class="zoom-btn" onclick="resetZoom()" title="Reset">⟲</button>
+            <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 25;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const progressBar = document.getElementById('progressBar');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            else currentSlide = n;
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (parseInt(slide.dataset.slide) === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            const progress = (currentSlide / totalSlides) * 100;
+            progressBar.style.width = progress + '%';
+
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+
+            updateIndicators();
+        }
+
+        function changeSlide(n) {
+            showSlide(currentSlide + n);
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        function createIndicators() {
+            const indicator = document.getElementById('slideIndicator');
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'indicator-dot';
+                dot.onclick = () => goToSlide(i);
+                dot.title = `Slide ${i}`;
+                indicator.appendChild(dot);
+            }
+        }
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') goToSlide(1);
+            if (e.key === 'End') goToSlide(totalSlides);
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) changeSlide(1);
+            if (touchEndX > touchStartX + 50) changeSlide(-1);
+        });
+
+        // Initialize
+        createIndicators();
+        showSlide(1);
+        addZoomIconsToDiagrams();
+
+        // Zoom functionality
+        let currentZoomLevel = 1;
+
+        function addZoomIconsToDiagrams() {
+            const diagramContainers = document.querySelectorAll('.diagram-container');
+            diagramContainers.forEach(container => {
+                const img = container.querySelector('img');
+                if (img && img.src) {
+                    // Add zoom icon
+                    const zoomIcon = document.createElement('div');
+                    zoomIcon.className = 'zoom-icon';
+                    zoomIcon.innerHTML = '🔍';
+                    zoomIcon.title = 'Click to zoom';
+                    container.appendChild(zoomIcon);
+
+                    // Click handlers
+                    const openZoom = () => {
+                        document.getElementById('zoomImage').src = img.src;
+                        document.getElementById('zoomModal').classList.add('active');
+                        currentZoomLevel = 1;
+                    };
+
+                    zoomIcon.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openZoom();
+                    });
+
+                    img.addEventListener('click', openZoom);
+                }
+            });
+        }
+
+        function closeZoom() {
+            document.getElementById('zoomModal').classList.remove('active');
+            currentZoomLevel = 1;
+            document.getElementById('zoomImage').classList.remove('zoomed');
+            document.getElementById('zoomImage').style.transform = '';
+        }
+
+        function zoomIn() {
+            currentZoomLevel = Math.min(currentZoomLevel + 0.25, 3);
+            document.getElementById('zoomImage').style.transform = `scale(${currentZoomLevel})`;
+        }
+
+        function zoomOut() {
+            currentZoomLevel = Math.max(currentZoomLevel - 0.25, 0.5);
+            document.getElementById('zoomImage').style.transform = `scale(${currentZoomLevel})`;
+        }
+
+        function resetZoom() {
+            currentZoomLevel = 1;
+            document.getElementById('zoomImage').style.transform = 'scale(1)';
+        }
+
+        // Click on image to toggle zoom
+        document.getElementById('zoomImage').addEventListener('click', () => {
+            if (currentZoomLevel === 1) {
+                zoomIn();
+            } else {
+                resetZoom();
+            }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeZoom();
+            }
+        });
+
+        // Close on background click
+        document.getElementById('zoomModal').addEventListener('click', (e) => {
+            if (e.target.id === 'zoomModal') {
+                closeZoom();
+            }
+        });
+    </script>
+</body>
+</html>

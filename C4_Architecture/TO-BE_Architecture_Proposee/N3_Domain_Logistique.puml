@@ -1,0 +1,287 @@
+@startuml N3_Domain_Logistique
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Domaine LOGISTIQUE - Architecture Détaillée\nGestion Livraisons, Livreurs et Optimisation Tournées
+
+LAYOUT_WITH_LEGEND()
+
+' ============================================
+' PRIMARY ADAPTERS
+' ============================================
+Component(driver_mobile_api, "Driver Mobile API", "GraphQL", "App livreur")
+Component(tracking_api, "Tracking API", "WebSocket", "Suivi temps réel")
+Component(admin_api, "Admin API", "REST", "Gestion livraisons")
+Component(event_listener, "Event Listener", "RabbitMQ", "Reacts to OrderConfirmed")
+
+' ============================================
+' COMMAND BUS
+' ============================================
+Container_Boundary(commands_section, "📝 COMMANDS") {
+    Component(command_bus, "Command Bus", "MediatR")
+
+    Component(assign_driver_cmd, "AssignDriverCommand", "Command", "• orderId\n• driverId (optional)\n• assignmentStrategy")
+    Component(accept_delivery_cmd, "AcceptDeliveryCommand", "Command", "• deliveryId\n• driverId")
+    Component(start_delivery_cmd, "StartDeliveryCommand", "Command", "• deliveryId\n• pickupLocation")
+    Component(update_location_cmd, "UpdateLocationCommand", "Command", "• driverId\n• latitude\n• longitude\n• timestamp")
+    Component(complete_delivery_cmd, "CompleteDeliveryCommand", "Command", "• deliveryId\n• proof (photo/signature)\n• completedAt")
+    Component(report_issue_cmd, "ReportIssueCommand", "Command", "• deliveryId\n• issueType\n• description")
+
+    Component(assign_handler, "AssignDriverHandler", "Handler")
+    Component(accept_handler, "AcceptDeliveryHandler", "Handler")
+    Component(start_handler, "StartDeliveryHandler", "Handler")
+    Component(location_handler, "UpdateLocationHandler", "Handler")
+    Component(complete_handler, "CompleteDeliveryHandler", "Handler")
+}
+
+' ============================================
+' DOMAIN LAYER
+' ============================================
+Container_Boundary(domain, "🏢 DOMAIN LAYER") {
+
+    Container_Boundary(aggregates, "Aggregates") {
+        Component(delivery_aggregate, "Delivery Aggregate", "Aggregate Root", "**State:**\n• deliveryId\n• orderId\n• driverId\n• status\n• pickupLocation\n• deliveryLocation\n• estimatedTime\n• actualTime\n• proof\n\n**Methods:**\n• assign(driver)\n• accept()\n• start()\n• updateProgress()\n• complete(proof)\n• reportIssue()")
+
+        Component(driver_aggregate, "Driver Aggregate", "Aggregate Root", "**State:**\n• driverId\n• name\n• phone\n• status (AVAILABLE/BUSY/OFFLINE)\n• currentLocation\n• vehicle\n• rating\n• activeDeliveries[]\n\n**Methods:**\n• goOnline()\n• goOffline()\n• updateLocation()\n• acceptDelivery()\n• completeDelivery()")
+
+        Component(route_aggregate, "Route Aggregate", "Aggregate Root", "**State:**\n• routeId\n• driverId\n• deliveries[]\n• optimizedPath\n• totalDistance\n• estimatedDuration\n\n**Methods:**\n• optimize()\n• addDelivery()\n• removeDelivery()\n• recalculate()")
+    }
+
+    Container_Boundary(value_objects, "Value Objects") {
+        Component(location_vo, "Location", "Value Object", "• latitude\n• longitude\n• address\n• validate()")
+        Component(delivery_proof_vo, "DeliveryProof", "Value Object", "• photo\n• signature\n• timestamp\n• validate()")
+        Component(eta_vo, "EstimatedTime", "Value Object", "• estimated\n• actual\n• variance\n• calculate()")
+        Component(vehicle_vo, "Vehicle", "Value Object", "• type\n• plate\n• capacity")
+    }
+
+    Container_Boundary(domain_services, "Domain Services") {
+        Component(assignment_strategy, "DriverAssignmentStrategy", "Service", "**Strategies:**\n• NearestAvailableDriver\n• LoadBalancingDriver\n• RatedDriver\n• ManualAssignment\n\n**Methods:**\n• findBestDriver()\n• calculateDistance()\n• evaluateCriteria()")
+
+        Component(route_optimizer, "RouteOptimizer", "Service", "**Algorithms:**\n• Traveling Salesman Problem\n• Dijkstra shortest path\n• Traffic-aware routing\n\n**Methods:**\n• optimizeRoute()\n• calculateETA()\n• suggestOptimizations()")
+
+        Component(incident_manager, "IncidentManager", "Service", "**Handles:**\n• Accidents\n• Delays\n• Customer issues\n• Vehicle breakdowns\n\n**Methods:**\n• handleAccident()\n• reassignDelivery()\n• notifyCustomer()")
+
+        Component(performance_calculator, "PerformanceCalculator", "Service", "**Metrics:**\n• On-time delivery rate\n• Average delivery time\n• Customer rating\n• Distance traveled\n\n**Methods:**\n• calculateMetrics()\n• updateDriverScore()")
+    }
+
+    Container_Boundary(domain_events, "Domain Events") {
+        Component(driver_assigned, "DriverAssignedEvent", "Event", "• deliveryId\n• driverId\n• assignedAt")
+        Component(delivery_started, "DeliveryStartedEvent", "Event", "• deliveryId\n• startedAt\n• eta")
+        Component(location_updated, "LocationUpdatedEvent", "Event", "• driverId\n• location\n• timestamp")
+        Component(delivery_completed, "DeliveryCompletedEvent", "Event", "• deliveryId\n• completedAt\n• proof\n• duration")
+        Component(issue_reported, "IssueReportedEvent", "Event", "• deliveryId\n• issueType\n• severity")
+        Component(eta_updated, "ETAUpdatedEvent", "Event", "• deliveryId\n• newETA\n• reason")
+    }
+
+    Container_Boundary(ports, "Repository Ports") {
+        Component(delivery_repo_port, "IDeliveryRepository", "Port", "• save()\n• findById()\n• findActive()\n• findByDriver()")
+        Component(driver_repo_port, "IDriverRepository", "Port", "• save()\n• findAvailable()\n• findByLocation()\n• updateStatus()")
+        Component(route_repo_port, "IRouteRepository", "Port", "• save()\n• findByDriver()\n• optimize()")
+    }
+
+    Container_Boundary(external_ports, "External Service Ports") {
+        Component(maps_port, "IMapsService", "Port", "• calculateRoute()\n• getDistance()\n• getTraffic()\n• reverseGeocode()")
+        Component(notification_port, "INotificationService", "Port", "• notifyCustomer()\n• notifyDriver()\n• sendPushNotification()")
+        Component(voip_port, "IVoIPService", "Port", "• initiateCall()\n• recordCall()\n• getCallHistory()")
+        Component(accident_detection_port, "IAccidentDetection", "Port", "• detectAccident()\n• alertEmergency()\n• getLocation()")
+    }
+}
+
+' ============================================
+' QUERY SIDE
+' ============================================
+Container_Boundary(queries_section, "📖 QUERIES") {
+    Component(query_bus, "Query Bus", "MediatR")
+
+    Component(track_delivery_query, "TrackDeliveryQuery", "Query", "• deliveryId")
+    Component(driver_location_query, "DriverLocationQuery", "Query", "• driverId")
+    Component(active_deliveries_query, "ActiveDeliveriesQuery", "Query", "• driverId")
+    Component(delivery_history_query, "DeliveryHistoryQuery", "Query", "• filters")
+
+    Component(delivery_view, "DeliveryTrackingView", "Read Model", "Real-time tracking")
+    Component(driver_view, "DriverStatusView", "Read Model", "Driver availability")
+    Component(read_repo, "LogisticsReadRepository", "Read Store", "Redis cache")
+}
+
+' ============================================
+' EVENT BUS
+' ============================================
+Component(event_bus, "Event Bus", "RabbitMQ/Kafka")
+
+Container_Boundary(event_subscribers, "Event Subscribers") {
+    Component(order_confirmed_subscriber, "OrderConfirmedSubscriber", "Handler", "Triggers driver assignment")
+    Component(location_tracker, "LocationTracker", "Handler", "Updates real-time map")
+    Component(eta_calculator, "ETACalculator", "Handler", "Recalculates ETA")
+    Component(customer_notifier, "CustomerNotifier", "Handler", "Sends updates to customer")
+    Component(analytics_updater, "AnalyticsUpdater", "Handler", "Tracks KPIs")
+    Component(projection_updater, "ProjectionUpdater", "Handler", "Updates read models")
+}
+
+' ============================================
+' INFRASTRUCTURE
+' ============================================
+Container_Boundary(infrastructure, "⚙️ INFRASTRUCTURE") {
+    Component(postgres_adapter, "PostgresLogisticsAdapter", "Adapter", "Delivery data")
+    Component(redis_adapter, "RedisLocationAdapter", "Adapter", "Real-time locations")
+    Component(mongodb_adapter, "MongoDBRouteAdapter", "Adapter", "Route history")
+
+    Component(google_maps_adapter, "GoogleMapsAdapter", "Adapter", "Maps API integration")
+    Component(twilio_adapter, "TwilioVoIPAdapter", "Adapter", "VoIP calls")
+    Component(firebase_adapter, "FirebasePushAdapter", "Adapter", "Push notifications")
+    Component(accident_sensor_adapter, "AccidentSensorAdapter", "Adapter", "IoT sensors")
+}
+
+ContainerDb(postgres_db, "PostgreSQL", "Database", "Deliveries")
+ContainerDb(redis_db, "Redis", "Cache", "Live tracking")
+ContainerDb(mongodb_db, "MongoDB", "NoSQL", "Routes & Analytics")
+
+System_Ext(google_maps, "Google Maps API", "External")
+System_Ext(twilio_voip, "Twilio VoIP", "External")
+System_Ext(firebase, "Firebase Cloud Messaging", "External")
+System_Ext(iot_sensors, "IoT Accident Sensors", "Hardware")
+
+' ============================================
+' EXTERNAL TRIGGERS
+' ============================================
+System_Ext(order_service, "Order Service", "Microservice")
+System_Ext(customer_app, "Customer App", "Mobile")
+
+' ============================================
+' FLOW: AUTO-ASSIGN DRIVER
+' ============================================
+Rel(order_service, event_bus, "1. Publishes OrderConfirmedEvent")
+Rel(event_bus, order_confirmed_subscriber, "2. Consumes")
+Rel(order_confirmed_subscriber, command_bus, "3. Dispatches AssignDriverCommand")
+Rel(command_bus, assign_driver_cmd, "4. Routes")
+Rel(assign_driver_cmd, assign_handler, "5. Handles")
+
+Rel(assign_handler, assignment_strategy, "6. Finds best driver")
+Rel(assignment_strategy, driver_repo_port, "7. Queries available drivers")
+Rel(driver_repo_port, postgres_adapter, "8. Reads")
+
+Rel(assignment_strategy, maps_port, "9. Calculates distances")
+Rel(maps_port, google_maps_adapter, "10. API call")
+Rel(google_maps_adapter, google_maps, "11. Get routes")
+
+Rel(assign_handler, delivery_aggregate, "12. Assigns driver")
+Rel(delivery_aggregate, driver_assigned, "13. Raises event")
+Rel(delivery_aggregate, delivery_repo_port, "14. Persists")
+
+Rel(driver_assigned, event_bus, "15. Publishes")
+Rel(event_bus, customer_notifier, "16. Notifies customer")
+Rel(customer_notifier, notification_port, "17. Sends push")
+Rel(notification_port, firebase_adapter, "18. Implements")
+Rel(firebase_adapter, firebase, "19. Push notification")
+
+' ============================================
+' FLOW: REAL-TIME TRACKING
+' ============================================
+Rel(driver_mobile_api, command_bus, "UpdateLocationCommand (every 10s)")
+Rel(command_bus, update_location_cmd, "Routes")
+Rel(update_location_cmd, location_handler, "Handles")
+
+Rel(location_handler, driver_aggregate, "Updates location")
+Rel(driver_aggregate, location_updated, "Raises event")
+
+Rel(location_updated, event_bus, "Publishes")
+Rel(event_bus, location_tracker, "Updates tracker")
+Rel(location_tracker, read_repo, "Updates cache")
+Rel(read_repo, redis_adapter, "Real-time cache")
+Rel(redis_adapter, redis_db, "Stores")
+
+Rel(event_bus, eta_calculator, "Recalculates ETA")
+Rel(eta_calculator, route_optimizer, "Uses")
+Rel(route_optimizer, maps_port, "Traffic data")
+
+' ============================================
+' FLOW: COMPLETE DELIVERY
+' ============================================
+Rel(driver_mobile_api, command_bus, "CompleteDeliveryCommand")
+Rel(command_bus, complete_delivery_cmd, "Routes")
+Rel(complete_delivery_cmd, complete_handler, "Handles")
+
+Rel(complete_handler, delivery_aggregate, "Completes")
+Rel(delivery_aggregate, delivery_completed, "Raises event")
+
+Rel(delivery_completed, event_bus, "Publishes")
+Rel(event_bus, analytics_updater, "Updates metrics")
+Rel(analytics_updater, performance_calculator, "Calculates")
+
+' ============================================
+' FLOW: ACCIDENT DETECTION
+' ============================================
+Rel(iot_sensors, accident_detection_port, "Detects impact")
+Rel(accident_detection_port, accident_sensor_adapter, "Implements")
+Rel(accident_sensor_adapter, command_bus, "ReportIssueCommand")
+Rel(command_bus, incident_manager, "Handles incident")
+Rel(incident_manager, notification_port, "Alerts emergency services")
+
+' ============================================
+' FLOW: TRACKING (Customer)
+' ============================================
+Rel(customer_app, tracking_api, "Subscribe to tracking", "WebSocket")
+Rel(tracking_api, query_bus, "TrackDeliveryQuery")
+Rel(query_bus, track_delivery_query, "Routes")
+Rel(track_delivery_query, read_repo, "Real-time data")
+Rel(read_repo, redis_db, "Fetches live location")
+
+note right of domain
+  **BUSINESS RULES:**
+
+  🚚 **Assignment Strategy**
+  • Distance < 5km preferred
+  • Driver rating > 4.0
+  • Max 3 concurrent deliveries
+  • Load balancing
+
+  📍 **Location Tracking**
+  • Update every 10 seconds
+  • Geo-fencing validation
+  • Battery optimization
+
+  ⏰ **ETA Calculation**
+  • Real-time traffic
+  • Historical data
+  • Driver behavior
+  • Weather conditions
+end note
+
+note left of assignment_strategy
+  **ASSIGNMENT ALGORITHMS:**
+
+  1️⃣ **Nearest Driver**
+  • Fastest assignment
+  • May not be optimal
+
+  2️⃣ **Load Balanced**
+  • Distributes evenly
+  • Prevents burnout
+
+  3️⃣ **Rated Driver**
+  • Quality focused
+  • Customer satisfaction
+
+  4️⃣ **Route Optimized**
+  • Multi-delivery routes
+  • Efficiency focused
+end note
+
+note bottom of route_optimizer
+  **ROUTE OPTIMIZATION:**
+
+  🗺️ **Algorithms Used:**
+  • TSP (Traveling Salesman)
+  • Dijkstra (shortest path)
+  • A* (heuristic search)
+
+  📊 **Factors:**
+  • Traffic patterns
+  • Time windows
+  • Vehicle capacity
+  • Priority deliveries
+
+  **Result:** 30% reduction in delivery time
+end note
+
+footer Domaine LOGISTIQUE - Real-time Tracking & Optimization | Good Food 3.0
+
+@enduml

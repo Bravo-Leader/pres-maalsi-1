@@ -1,0 +1,214 @@
+@startuml N3_Component_OrderService
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Service COMMANDE - Niveau 3: Composants\nArchitecture Hexagonale Détaillée
+
+LAYOUT_WITH_LEGEND()
+
+Container(rest_api, "REST API", "Express", "API standard HTTP/JSON")
+
+' ====================
+' PRIMARY PORTS (Adapters Entrée)
+' ====================
+Container_Boundary(primary_adapters, "🔌 PRIMARY ADAPTERS (Entrée)") {
+    Component(rest_controller, "REST Controller", "Express", "• POST /api/orders\n• GET /api/orders/:id\n• PATCH /api/orders/:id\n• DELETE /api/orders/:id")
+
+    Component(event_listener, "Event Listener", "RabbitMQ Consumer", "• PaymentConfirmed\n• StockReserved\n• DriverAssigned")
+}
+
+' ====================
+' APPLICATION LAYER
+' ====================
+Container_Boundary(application, "📋 APPLICATION LAYER") {
+    Component(create_order_usecase, "CreateOrderUseCase", "Use Case", "**Orchestrates:**\n1. Validate input\n2. Check stock\n3. Calculate price\n4. Create order\n5. Reserve inventory\n6. Publish event")
+
+    Component(cancel_order_usecase, "CancelOrderUseCase", "Use Case", "**Orchestrates:**\n1. Load order\n2. Check policy\n3. Calculate refund\n4. Update status\n5. Release stock\n6. Process refund")
+
+    Component(update_order_usecase, "UpdateOrderUseCase", "Use Case", "**Orchestrates:**\n1. Validate update\n2. Apply changes\n3. Update status\n4. Notify parties")
+}
+
+' ====================
+' DOMAIN LAYER (Cœur Métier)
+' ====================
+Container_Boundary(domain, "🏢 DOMAIN LAYER (Cœur Hexagone)") {
+
+    Container_Boundary(aggregates, "Aggregates") {
+        Component(order, "Order", "Aggregate Root", "**État:**\n• orderId\n• customerId\n• items[]\n• totalAmount\n• status\n• createdAt\n\n**Méthodes:**\n• create()\n• confirm()\n• cancel()\n• canBeCancelled()")
+
+        Component(order_item, "OrderItem", "Entity", "• productId\n• quantity\n• unitPrice\n• subtotal")
+    }
+
+    Container_Boundary(value_objects, "Value Objects") {
+        Component(money, "Money", "Value Object", "• amount\n• currency\n• format()")
+
+        Component(address, "Address", "Value Object", "• street\n• city\n• zipCode\n• validate()")
+    }
+
+    Container_Boundary(domain_services, "Domain Services") {
+        Component(pricing_service, "PricingService", "Domain Service", "**Calcule:**\n• Prix total\n• Frais livraison\n• Promotions\n• Taxes")
+
+        Component(validation_service, "ValidationService", "Domain Service", "**Valide:**\n• Montant minimum\n• Zone livraison\n• Horaires\n• Stock disponible")
+    }
+
+    Container_Boundary(domain_events, "Domain Events") {
+        Component(order_created_event, "OrderCreatedEvent", "Event", "• orderId\n• customerId\n• items\n• total")
+
+        Component(order_cancelled_event, "OrderCancelledEvent", "Event", "• orderId\n• reason\n• refundAmount")
+    }
+
+    Container_Boundary(ports_interfaces, "Ports (Interfaces)") {
+        Component(order_repository_port, "IOrderRepository", "Port", "• save(order)\n• findById(id)\n• findByCustomer()")
+
+        Component(inventory_port, "IInventoryService", "Port", "• checkStock(items)\n• reserve(orderId, items)")
+
+        Component(payment_port, "IPaymentService", "Port", "• charge(amount)\n• refund(transactionId)")
+    }
+}
+
+' ====================
+' SECONDARY ADAPTERS (Sortie)
+' ====================
+Container_Boundary(secondary_adapters, "⚙️ SECONDARY ADAPTERS (Sortie)") {
+    Component(postgres_adapter, "PostgresOrderRepository", "Adapter", "**Implémente:** IOrderRepository\n\n• INSERT INTO orders\n• SELECT * FROM orders\n• UPDATE orders")
+
+    Component(inventory_adapter, "InventoryServiceAdapter", "Adapter", "**Implémente:** IInventoryService\n\n• HTTP call to Inventory API\n• Handles retries\n• Circuit breaker")
+
+    Component(payment_adapter, "PaymentServiceAdapter", "Adapter", "**Implémente:** IPaymentService\n\n• HTTP call to Payment API\n• 3D Secure flow\n• Webhook handling")
+
+    Component(event_publisher, "RabbitMQPublisher", "Adapter", "**Publie événements**\n\n• exchange: orders\n• routing key: order.*\n• durable: true")
+}
+
+' ====================
+' INFRASTRUCTURE
+' ====================
+ContainerDb(postgres_db, "PostgreSQL", "Database", "orders table")
+Container(inventory_service, "Inventory Service", "Microservice", "Stock management")
+Container(payment_service, "Payment Service", "Microservice", "Payments")
+Container(event_bus, "RabbitMQ", "Message Broker", "Event distribution")
+
+' ====================
+' FLOW: CREATE ORDER
+' ====================
+Rel(rest_api, rest_controller, "POST /api/orders", "HTTP/JSON")
+Rel(rest_controller, create_order_usecase, "1. Execute", "Command")
+
+Rel(create_order_usecase, validation_service, "2. Validate", "Domain call")
+Rel(create_order_usecase, pricing_service, "3. Calculate", "Domain call")
+Rel(create_order_usecase, inventory_port, "4. Check stock", "Port interface")
+Rel(inventory_port, inventory_adapter, "5. Implements", "Adapter")
+Rel(inventory_adapter, inventory_service, "6. HTTP call", "REST API")
+
+Rel(create_order_usecase, order, "7. Create aggregate", "New")
+Rel(order, order_created_event, "8. Raises event", "Domain event")
+
+Rel(create_order_usecase, order_repository_port, "9. Save", "Port interface")
+Rel(order_repository_port, postgres_adapter, "10. Implements", "Adapter")
+Rel(postgres_adapter, postgres_db, "11. INSERT", "SQL")
+
+Rel(order_created_event, event_publisher, "12. Publish", "Event")
+Rel(event_publisher, event_bus, "13. Send", "AMQP")
+
+' ====================
+' FLOW: CANCEL ORDER
+' ====================
+Rel(rest_controller, cancel_order_usecase, "Execute", "Command")
+Rel(cancel_order_usecase, order_repository_port, "Load order", "Port")
+Rel(cancel_order_usecase, order, "Cancel", "Method")
+Rel(cancel_order_usecase, payment_port, "Process refund", "Port")
+Rel(payment_port, payment_adapter, "Implements", "Adapter")
+Rel(payment_adapter, payment_service, "HTTP call", "REST API")
+
+' ====================
+' FLOW: EVENT HANDLING
+' ====================
+Rel(event_bus, event_listener, "Consumes events", "AMQP")
+Rel(event_listener, update_order_usecase, "Execute", "Command")
+
+' ====================
+' NOTES
+' ====================
+note right of domain
+  **HEXAGONAL CORE**
+
+  🛡️ **Protection du Domaine:**
+  • Zéro dépendance externe
+  • Logique métier pure
+  • Testable sans infra
+  • Frameworks agnostic
+
+  **Business Rules:**
+  • Min order: 10€
+  • Delivery zones validated
+  • Stock must be available
+  • Cancellation policy enforced
+
+  **Benefits:**
+  ✅ 100% test coverage
+  ✅ Change DB easily
+  ✅ Change payment provider
+  ✅ Évolutif sans risque
+end note
+
+note left of primary_adapters
+  **PRIMARY PORTS**
+
+  🔌 **Entrées du système:**
+
+  **REST Controller:**
+  • Standard HTTP/JSON API
+  • CRUD operations
+  • Mobile/Web apps
+  • External integrations
+  • B2B APIs
+
+  **Event Listener:**
+  • Reactive to events
+  • Async processing
+  • Decoupled services
+end note
+
+note bottom of secondary_adapters
+  **SECONDARY PORTS**
+
+  ⚙️ **Sorties du système:**
+
+  **Pattern Adapter:**
+  • Port = Interface (contrat)
+  • Adapter = Implémentation
+
+  **Example - Change DB:**
+  ```
+  IOrderRepository (Port)
+     ├─ PostgresOrderRepository
+     ├─ MongoOrderRepository
+     └─ InMemoryOrderRepository (tests)
+  ```
+
+  **Benefits:**
+  ✅ Swap implementations
+  ✅ Mock in tests
+  ✅ No domain changes
+end note
+
+note as n1
+  **FLUX COMPLET: Créer Commande**
+
+  1️⃣ **Client** envoie POST /api/orders
+  2️⃣ **REST Controller** délègue au Use Case
+  3️⃣ **Use Case** orchestre:
+     • Valide les données
+     • Vérifie le stock (via Port)
+     • Calcule le prix (Domain Service)
+     • Crée l'aggregate Order
+     • Persiste (via Port)
+     • Publie événement (via Port)
+  4️⃣ **Adapters** implémentent les ports
+  5️⃣ **Event Bus** distribue l'événement
+  6️⃣ **Autres services** réagissent
+
+  ⏱️ **Temps total: < 500ms**
+end note
+
+footer Service COMMANDE - N3 Components | Architecture Hexagonale
+
+@enduml

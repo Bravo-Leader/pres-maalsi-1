@@ -1,0 +1,185 @@
+@startuml N3a_Logistics_Simple
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Service LOGISTIQUE - N3a: Livraisons\nTracking GPS + Auto-Assignment
+
+LAYOUT_WITH_LEGEND()
+
+System_Ext(driver_app, "Driver Mobile App", "React Native")
+Container(event_bus_ext, "Event Bus", "RabbitMQ")
+
+' ====================
+' PRIMARY ADAPTERS
+' ====================
+Container_Boundary(primary, "PRIMARY ADAPTERS") {
+    Component(driver_api, "Driver API", "REST", "POST /api/deliveries/:id/accept\nPATCH /api/drivers/location\nPOST /api/deliveries/:id/complete")
+
+    Component(tracking_ws, "Tracking WebSocket", "Socket.IO", "Real-time updates\n→ Client/Restaurant")
+
+    Component(order_listener, "Order Listener", "RabbitMQ", "OrderConfirmed\n→ Auto-assign driver")
+}
+
+' ====================
+' APPLICATION
+' ====================
+Container_Boundary(application, "APPLICATION") {
+    Component(assign_usecase, "AssignDriverUseCase", "Use Case", "1. Find available drivers\n2. Calculate distances\n3. Choose best\n4. Assign delivery")
+
+    Component(update_location_usecase, "UpdateLocationUseCase", "Use Case", "1. Update GPS (every 10s)\n2. Recalculate ETA\n3. Broadcast WebSocket")
+
+    Component(complete_usecase, "CompleteDeliveryUseCase", "Use Case", "1. Validate proof\n2. Complete delivery\n3. Free driver\n4. Publish event")
+}
+
+' ====================
+' DOMAIN
+' ====================
+Container_Boundary(domain, "DOMAIN") {
+    Component(delivery, "Delivery", "Aggregate", "**État:**\n• deliveryId\n• orderId\n• driverId\n• status\n• pickupLocation\n• deliveryLocation\n• estimatedTime")
+
+    Component(driver, "Driver", "Aggregate", "**État:**\n• driverId\n• name\n• status (AVAILABLE/BUSY)\n• currentLocation\n• rating")
+
+    Component(assignment_strategy, "AssignmentStrategy", "Service", "**Choisit:**\n1. Plus proche (distance)\n2. Meilleur rating\n3. Load balancing")
+
+    Component(driver_assigned, "DriverAssignedEvent", "Event")
+}
+
+' ====================
+' PORTS
+' ====================
+Container_Boundary(ports, "PORTS") {
+    Component(delivery_repo, "IDeliveryRepository", "Port")
+    Component(driver_repo, "IDriverRepository", "Port")
+    Component(maps_service, "IMapsService", "Port", "calculateRoute()\ngetDistance()")
+}
+
+' ====================
+' ADAPTERS
+' ====================
+Container_Boundary(adapters, "ADAPTERS") {
+    Component(postgres_adapter, "PostgresAdapter", "Adapter", "deliveries, drivers tables")
+
+    Component(redis_geo_adapter, "RedisGeoAdapter", "Adapter", "**Redis Geo Commands:**\n\nGEOADD drivers 2.3522 48.8566 driver123\nGEORADIUS drivers 2.35 48.85 5 km\n\n**Returns:**\nDrivers within 5km radius")
+
+    Component(google_maps_adapter, "GoogleMapsAdapter", "Adapter", "**API Calls:**\n• Distance Matrix\n• Directions\n• Traffic data")
+
+    Component(firebase_adapter, "FirebaseAdapter", "Adapter", "Push notifications")
+}
+
+' ====================
+' INFRA
+' ====================
+ContainerDb(postgres, "PostgreSQL", "DB")
+ContainerDb(redis, "Redis", "Cache", "GPS positions (Geo)")
+System_Ext(google_maps, "Google Maps API")
+System_Ext(firebase, "Firebase FCM")
+
+' ====================
+' FLOW: AUTO-ASSIGN
+' ====================
+Rel(event_bus_ext, order_listener, "1. OrderConfirmedEvent")
+Rel(order_listener, assign_usecase, "2. Execute")
+
+Rel(assign_usecase, driver_repo, "3. Find available")
+Rel(driver_repo, redis_geo_adapter, "4. GEORADIUS")
+Rel(redis_geo_adapter, redis, "5. Query by proximity")
+
+Rel(assign_usecase, assignment_strategy, "6. Choose best")
+Rel(assignment_strategy, maps_service, "7. Calculate distances")
+Rel(maps_service, google_maps_adapter, "8. API call")
+Rel(google_maps_adapter, google_maps, "9. Distance Matrix")
+
+Rel(assign_usecase, delivery, "10. Assign driver")
+Rel(delivery, driver_assigned, "11. Raise event")
+
+Rel(assign_usecase, delivery_repo, "12. Save")
+Rel(delivery_repo, postgres_adapter, "13. INSERT")
+
+Rel(driver_assigned, firebase_adapter, "14. Notify customer")
+Rel(firebase_adapter, firebase, "15. Push notification")
+
+' ====================
+' FLOW: GPS UPDATE
+' ====================
+Rel(driver_app, driver_api, "PATCH /location (every 10s)")
+Rel(driver_api, update_location_usecase, "Execute")
+
+Rel(update_location_usecase, driver, "Update location")
+Rel(update_location_usecase, driver_repo, "Save")
+Rel(driver_repo, redis_geo_adapter, "GEOADD")
+
+Rel(update_location_usecase, tracking_ws, "Broadcast")
+Rel(tracking_ws, driver_app, "WebSocket push")
+
+note right of redis_geo_adapter
+  **REDIS GEO COMMANDS**
+
+  **Store driver position:**
+  ```
+  GEOADD drivers
+    2.3522 48.8566 driver1
+    2.3540 48.8580 driver2
+  ```
+
+  **Find nearby drivers:**
+  ```
+  GEORADIUS drivers
+    2.35 48.85 5 km
+    WITHDIST ASC
+  ```
+
+  **Returns:**
+  ```
+  1) driver1 (0.8 km)
+  2) driver2 (1.2 km)
+  ```
+
+  **Performance:**
+  • < 10ms queries
+  • Millions of points
+  • Auto-sorted by distance
+end note
+
+note left of assignment_strategy
+  **ASSIGNMENT LOGIC**
+
+  **Strategy 1: Nearest**
+  • Fastest assignment
+  • Shortest delivery time
+
+  **Strategy 2: Rating**
+  • Driver rating > 4.0
+  • Quality focused
+
+  **Strategy 3: Load Balanced**
+  • Max 3 concurrent deliveries
+  • Prevents burnout
+
+  **Final choice:**
+  • Combine all factors
+  • Weighted score
+end note
+
+note as flow
+  **FLUX COMPLET**
+
+  **Auto-Assignment:**
+  1️⃣ OrderConfirmed event
+  2️⃣ Find drivers (Redis GEORADIUS)
+  3️⃣ Calculate distances (Google Maps)
+  4️⃣ Apply strategy (Domain Service)
+  5️⃣ Assign best driver
+  6️⃣ Notify customer (Firebase)
+
+  **Tracking temps réel:**
+  • Driver update GPS every 10s
+  • Redis GEOADD cache position
+  • WebSocket broadcast
+  • ETA recalculated
+
+  ⏱️ **Assignment:** < 2s
+  ⏱️ **GPS update:** < 50ms
+end note
+
+footer Service LOGISTIQUE - N3a: Simple Logistics | Redis Geo + WebSocket
+
+@enduml

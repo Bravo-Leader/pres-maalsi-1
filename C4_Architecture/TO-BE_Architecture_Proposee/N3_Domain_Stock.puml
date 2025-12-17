@@ -1,0 +1,241 @@
+@startuml N3_Domain_Stock
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Domaine STOCK (Inventory) - Architecture Détaillée\nGestion des Stocks et Approvisionnements
+
+LAYOUT_WITH_LEGEND()
+
+' ============================================
+' PRIMARY ADAPTERS
+' ============================================
+Component(rest_api, "REST API", "Spring Boot", "CRUD stocks")
+Component(event_listener, "Event Listener", "RabbitMQ Consumer", "Reacts to orders")
+Component(scheduled_sync, "Scheduled Sync", "Cron Job", "Sync with POS")
+
+' ============================================
+' COMMAND BUS
+' ============================================
+Container_Boundary(commands_section, "📝 COMMANDS") {
+    Component(command_bus, "Command Bus", "MediatR")
+
+    Component(reserve_stock_cmd, "ReserveStockCommand", "Command", "• orderId\n• items[]\n• restaurantId")
+    Component(release_stock_cmd, "ReleaseStockCommand", "Command", "• reservationId\n• reason")
+    Component(update_stock_cmd, "UpdateStockCommand", "Command", "• productId\n• quantity\n• restaurantId")
+    Component(restock_cmd, "RestockCommand", "Command", "• productId\n• quantity\n• supplierId")
+    Component(check_stock_cmd, "CheckStockCommand", "Command", "• productId\n• quantity")
+
+    Component(reserve_handler, "ReserveStockHandler", "Handler")
+    Component(release_handler, "ReleaseStockHandler", "Handler")
+    Component(update_handler, "UpdateStockHandler", "Handler")
+    Component(restock_handler, "RestockHandler", "Handler")
+}
+
+' ============================================
+' DOMAIN LAYER
+' ============================================
+Container_Boundary(domain, "🏢 DOMAIN LAYER") {
+
+    Container_Boundary(aggregates, "Aggregates") {
+        Component(inventory_aggregate, "Inventory Aggregate", "Aggregate Root", "**State:**\n• productId\n• restaurantId\n• availableQuantity\n• reservedQuantity\n• minThreshold\n• maxCapacity\n• lastUpdated\n\n**Methods:**\n• reserve(qty)\n• release(reservationId)\n• updateStock(qty)\n• checkAvailability(qty)")
+
+        Component(reservation, "Reservation", "Entity", "**State:**\n• reservationId\n• orderId\n• items[]\n• expiresAt\n• status\n\n**Methods:**\n• confirm()\n• cancel()\n• expire()")
+
+        Component(stock_movement, "StockMovement", "Entity", "**History:**\n• movementId\n• type (IN/OUT)\n• quantity\n• reason\n• timestamp\n• userId")
+    }
+
+    Container_Boundary(value_objects, "Value Objects") {
+        Component(quantity_vo, "Quantity", "Value Object", "• value\n• unit\n• validate()")
+        Component(product_ref, "ProductReference", "Value Object", "• productId\n• sku\n• name")
+        Component(threshold_vo, "StockThreshold", "Value Object", "• min\n• max\n• reorderPoint")
+    }
+
+    Container_Boundary(domain_services, "Domain Services") {
+        Component(availability_checker, "AvailabilityChecker", "Service", "• checkMultipleItems()\n• findAlternatives()\n• suggestSubstitutes()")
+
+        Component(reservation_manager, "ReservationManager", "Service", "• createReservation()\n• confirmReservation()\n• expireReservations()")
+
+        Component(stock_calculator, "StockCalculator", "Service", "• calculateAvailable()\n• projectFutureStock()\n• calculateReorderQty()")
+
+        Component(alert_service, "AlertService", "Service", "• checkLowStock()\n• notifyOutOfStock()\n• sendRestockAlert()")
+    }
+
+    Container_Boundary(domain_events, "Domain Events") {
+        Component(stock_reserved, "StockReservedEvent", "Event", "• reservationId\n• items\n• orderId")
+        Component(stock_released, "StockReleasedEvent", "Event", "• reservationId\n• reason")
+        Component(stock_depleted, "StockDepletedEvent", "Event", "• productId\n• restaurantId")
+        Component(low_stock_alert, "LowStockAlertEvent", "Event", "• productId\n• currentQty\n• threshold")
+        Component(stock_updated, "StockUpdatedEvent", "Event", "• productId\n• oldQty\n• newQty")
+    }
+
+    Container_Boundary(ports, "Repository Ports") {
+        Component(inventory_repo_port, "IInventoryRepository", "Port", "• save()\n• findByProduct()\n• findByRestaurant()")
+        Component(reservation_repo_port, "IReservationRepository", "Port", "• save()\n• findActive()\n• findExpired()")
+        Component(movement_repo_port, "IStockMovementRepository", "Port", "• save()\n• getHistory()\n• auditTrail()")
+    }
+
+    Container_Boundary(external_ports, "External Ports") {
+        Component(pos_port, "IPOSSystem", "Port", "• getCurrentStock()\n• syncStock()")
+        Component(supplier_port, "ISupplierSystem", "Port", "• createPurchaseOrder()\n• trackDelivery()")
+        Component(notification_port, "INotificationService", "Port", "• alertLowStock()\n• notifyRestaurant()")
+    }
+}
+
+' ============================================
+' QUERY SIDE
+' ============================================
+Container_Boundary(queries_section, "📖 QUERIES") {
+    Component(query_bus, "Query Bus", "MediatR")
+
+    Component(get_stock_query, "GetStockQuery", "Query", "• productId\n• restaurantId")
+    Component(list_low_stock_query, "ListLowStockQuery", "Query", "• restaurantId\n• threshold")
+    Component(stock_history_query, "StockHistoryQuery", "Query", "• productId\n• dateRange")
+
+    Component(stock_view, "StockView", "Read Model", "Optimized projection")
+    Component(read_repo, "StockReadRepository", "Read Store", "Redis cache")
+}
+
+' ============================================
+' EVENT BUS
+' ============================================
+Component(event_bus, "Event Bus", "RabbitMQ/Kafka")
+
+Container_Boundary(event_subscribers, "Event Subscribers") {
+    Component(order_created_subscriber, "OrderCreatedSubscriber", "Handler", "Reserves stock when order created")
+    Component(order_cancelled_subscriber, "OrderCancelledSubscriber", "Handler", "Releases stock when order cancelled")
+    Component(delivery_completed_subscriber, "DeliveryCompletedSubscriber", "Handler", "Confirms reservation")
+    Component(projection_updater, "ProjectionUpdater", "Handler", "Updates read models")
+    Component(alert_notifier, "AlertNotifier", "Handler", "Sends low stock alerts")
+}
+
+' ============================================
+' INFRASTRUCTURE
+' ============================================
+Container_Boundary(infrastructure, "⚙️ INFRASTRUCTURE") {
+    Component(postgres_inventory_adapter, "PostgresInventoryAdapter", "Adapter", "Implements repositories")
+    Component(redis_cache_adapter, "RedisCacheAdapter", "Adapter", "Caches stock levels")
+    Component(pos_adapter, "POSSystemAdapter", "Adapter", "Sync with POS")
+    Component(supplier_adapter, "SupplierAPIAdapter", "Adapter", "Orders from suppliers")
+    Component(email_adapter, "EmailAdapter", "Adapter", "Alert notifications")
+}
+
+ContainerDb(postgres_db, "PostgreSQL", "Database", "Stock data")
+ContainerDb(redis_db, "Redis", "Cache", "Real-time stock")
+System_Ext(pos_system, "POS System", "Point of Sale")
+System_Ext(supplier_api, "Supplier API", "External")
+System_Ext(email_service, "Email Service", "SMTP")
+
+' ============================================
+' EXTERNAL TRIGGERS
+' ============================================
+System_Ext(order_service, "Order Service", "Microservice", "Publishes OrderCreated")
+
+' ============================================
+' FLOW: RESERVE STOCK (from Order)
+' ============================================
+Rel(order_service, event_bus, "1. Publishes OrderCreatedEvent")
+Rel(event_bus, order_created_subscriber, "2. Consumes event")
+Rel(order_created_subscriber, command_bus, "3. Dispatches ReserveStockCommand")
+Rel(command_bus, reserve_stock_cmd, "4. Routes")
+Rel(reserve_stock_cmd, reserve_handler, "5. Handles")
+
+Rel(reserve_handler, availability_checker, "6. Checks availability")
+Rel(reserve_handler, inventory_aggregate, "7. Reserves stock")
+Rel(inventory_aggregate, reservation_manager, "8. Creates reservation")
+
+Rel(inventory_aggregate, stock_reserved, "9. Raises StockReservedEvent")
+Rel(inventory_aggregate, inventory_repo_port, "10. Persists")
+Rel(inventory_repo_port, postgres_inventory_adapter, "11. Implements")
+Rel(postgres_inventory_adapter, postgres_db, "12. Writes")
+
+Rel(stock_reserved, event_bus, "13. Publishes event")
+Rel(event_bus, projection_updater, "14. Updates read model")
+Rel(projection_updater, read_repo, "15. Updates cache")
+Rel(read_repo, redis_cache_adapter, "16. Caches")
+Rel(redis_cache_adapter, redis_db, "17. Stores")
+
+' ============================================
+' FLOW: LOW STOCK DETECTION
+' ============================================
+Rel(inventory_aggregate, alert_service, "Checks threshold")
+Rel(alert_service, low_stock_alert, "Raises alert event")
+Rel(low_stock_alert, event_bus, "Publishes")
+Rel(event_bus, alert_notifier, "Notifies")
+
+Rel(alert_notifier, notification_port, "Sends alert")
+Rel(notification_port, email_adapter, "Implements")
+Rel(email_adapter, email_service, "Sends email")
+
+Rel(alert_notifier, supplier_port, "Auto-reorder")
+Rel(supplier_port, supplier_adapter, "Implements")
+Rel(supplier_adapter, supplier_api, "Creates PO")
+
+' ============================================
+' FLOW: SYNC WITH POS
+' ============================================
+Rel(scheduled_sync, pos_port, "Scheduled sync")
+Rel(pos_port, pos_adapter, "Implements")
+Rel(pos_adapter, pos_system, "Fetches current stock")
+Rel(pos_adapter, command_bus, "Updates via UpdateStockCommand")
+
+' ============================================
+' FLOW: QUERY STOCK
+' ============================================
+Rel(rest_api, query_bus, "GetStockQuery")
+Rel(query_bus, get_stock_query, "Routes")
+Rel(get_stock_query, read_repo, "Reads from cache")
+Rel(read_repo, redis_db, "Fast read")
+
+note right of domain
+  **BUSINESS RULES:**
+
+  📦 **Stock Management**
+  • Available = Total - Reserved
+  • Reservations expire after 15 min
+  • Auto-reorder when < threshold
+  • Prevent overselling
+
+  🔔 **Alerts**
+  • Low stock: < min threshold
+  • Out of stock: = 0
+  • Overstocked: > max capacity
+
+  📊 **Audit Trail**
+  • Track all movements
+  • WHO changed WHAT WHEN
+end note
+
+note left of event_bus
+  **EVENT-DRIVEN STOCK:**
+
+  ✅ **Reactive to Orders**
+  • OrderCreated → Reserve
+  • OrderCancelled → Release
+  • DeliveryCompleted → Confirm
+
+  ✅ **Automatic Alerts**
+  • Low stock → Notify
+  • Out of stock → Alert
+  • Restock → Auto PO
+
+  ✅ **Real-time Updates**
+  • Cache invalidation
+  • Push notifications
+end note
+
+note bottom of aggregates
+  **RESERVATION PATTERN:**
+
+  ⏰ **Time-based Reservations**
+  1. Reserve stock (15 min TTL)
+  2. Customer completes payment
+  3. Confirm or auto-expire
+
+  **Prevents:**
+  • Overselling
+  • Race conditions
+  • Inventory conflicts
+end note
+
+footer Domaine STOCK - Real-time Inventory Management | Good Food 3.0
+
+@enduml

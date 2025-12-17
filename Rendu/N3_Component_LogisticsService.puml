@@ -1,0 +1,253 @@
+@startuml N3_Component_LogisticsService
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Service LOGISTIQUE - Niveau 3: Composants\nArchitecture Hexagonale - Gestion Livraisons et Livreurs
+
+LAYOUT_WITH_LEGEND()
+
+Container(driver_app, "Driver Mobile App", "React Native", "App livreur")
+Container(tracking_api, "Tracking API", "WebSocket", "Suivi temps réel")
+Container(event_bus_ext, "Event Bus", "RabbitMQ", "OrderConfirmed")
+
+' ====================
+' PRIMARY ADAPTERS (Entrée)
+' ====================
+Container_Boundary(primary_adapters, "🔌 PRIMARY ADAPTERS (Entrée)") {
+    Component(driver_api, "Driver API", "REST", "• POST /api/deliveries/:id/accept\n• PATCH /api/drivers/location\n• POST /api/deliveries/:id/complete")
+
+    Component(order_event_listener, "Order Event Listener", "RabbitMQ Consumer", "• OrderConfirmed\n→ Assigner livreur")
+
+    Component(tracking_websocket, "Tracking WebSocket", "Socket.IO", "Suivi temps réel\nclient/restaurant")
+}
+
+' ====================
+' APPLICATION LAYER
+' ====================
+Container_Boundary(application, "📋 APPLICATION LAYER") {
+    Component(assign_driver_usecase, "AssignDriverUseCase", "Use Case", "**Orchestrates:**\n1. Trouver livreurs dispos\n2. Calculer distances\n3. Choisir le meilleur\n4. Assigner livraison")
+
+    Component(update_location_usecase, "UpdateLocationUseCase", "Use Case", "**Orchestrates:**\n1. Valider coordonnées\n2. Mettre à jour position\n3. Recalculer ETA\n4. Notifier client")
+
+    Component(complete_delivery_usecase, "CompleteDeliveryUseCase", "Use Case", "**Orchestrates:**\n1. Valider preuve livraison\n2. Compléter livraison\n3. Libérer livreur\n4. Calculer paiement")
+}
+
+' ====================
+' DOMAIN LAYER (Cœur Métier)
+' ====================
+Container_Boundary(domain, "🏢 DOMAIN LAYER (Cœur Hexagone)") {
+
+    Container_Boundary(aggregates, "Aggregates") {
+        Component(delivery, "Delivery", "Aggregate Root", "**État:**\n• deliveryId\n• orderId\n• driverId\n• status\n• pickupLocation\n• deliveryLocation\n• estimatedTime\n• actualTime\n\n**Méthodes:**\n• assign(driver)\n• start()\n• complete(proof)\n• updateETA()")
+
+        Component(driver, "Driver", "Aggregate Root", "**État:**\n• driverId\n• name\n• status (AVAILABLE/BUSY)\n• currentLocation\n• rating\n• activeDeliveries[]\n\n**Méthodes:**\n• acceptDelivery()\n• updateLocation()\n• completeDelivery()")
+    }
+
+    Container_Boundary(value_objects, "Value Objects") {
+        Component(location, "Location", "Value Object", "• latitude\n• longitude\n• address")
+
+        Component(eta, "EstimatedTime", "Value Object", "• estimated\n• actual\n• variance")
+
+        Component(proof, "DeliveryProof", "Value Object", "• photo\n• signature\n• timestamp")
+    }
+
+    Container_Boundary(domain_services, "Domain Services") {
+        Component(assignment_strategy, "DriverAssignmentStrategy", "Domain Service", "**Stratégies:**\n1. Plus proche (distance)\n2. Meilleur noté (rating)\n3. Load balancing\n\n**Choisit** meilleur livreur")
+
+        Component(route_optimizer, "RouteOptimizer", "Domain Service", "**Calcule:**\n• Plus court chemin\n• Trafic en temps réel\n• ETA dynamique\n\n**Algorithme:** Dijkstra + Traffic")
+
+        Component(performance_calculator, "PerformanceCalculator", "Domain Service", "**Métriques:**\n• On-time delivery %\n• Temps moyen livraison\n• Rating moyen")
+    }
+
+    Container_Boundary(domain_events, "Domain Events") {
+        Component(driver_assigned_event, "DriverAssignedEvent", "Event", "• deliveryId\n• driverId\n• estimatedTime")
+
+        Component(location_updated_event, "LocationUpdatedEvent", "Event", "• driverId\n• location\n• timestamp")
+
+        Component(delivery_completed_event, "DeliveryCompletedEvent", "Event", "• deliveryId\n• completedAt\n• duration\n• proof")
+    }
+
+    Container_Boundary(ports_interfaces, "Ports (Interfaces)") {
+        Component(delivery_repo_port, "IDeliveryRepository", "Port", "• save(delivery)\n• findById(id)\n• findActive()")
+
+        Component(driver_repo_port, "IDriverRepository", "Port", "• save(driver)\n• findAvailable()\n• findByLocation()")
+
+        Component(maps_port, "IMapsService", "Port", "• calculateRoute()\n• getDistance()\n• getTraffic()")
+
+        Component(notification_port, "INotificationService", "Port", "• notifyCustomer()\n• notifyDriver()\n• sendPush()")
+    }
+}
+
+' ====================
+' SECONDARY ADAPTERS (Sortie)
+' ====================
+Container_Boundary(secondary_adapters, "⚙️ SECONDARY ADAPTERS (Sortie)") {
+    Component(postgres_adapter, "PostgresDeliveryRepository", "Adapter", "**Implémente:** IDeliveryRepository\n\n• INSERT INTO deliveries\n• UPDATE delivery_status\n• SELECT active deliveries")
+
+    Component(redis_location_adapter, "RedisLocationAdapter", "Adapter", "**Cache positions GPS**\n\n• GEOADD drivers lat lng\n• GEORADIUS pour proximité\n• TTL 30 secondes")
+
+    Component(google_maps_adapter, "GoogleMapsAdapter", "Adapter", "**Implémente:** IMapsService\n\n• Directions API\n• Distance Matrix API\n• Traffic data")
+
+    Component(firebase_adapter, "FirebaseNotificationAdapter", "Adapter", "**Implémente:** INotificationService\n\n• Push notifications\n• Cloud Messaging")
+
+    Component(event_publisher, "RabbitMQPublisher", "Adapter", "**Publie événements**\n\n• exchange: logistics\n• routing key: delivery.*")
+}
+
+' ====================
+' INFRASTRUCTURE
+' ====================
+ContainerDb(postgres_db, "PostgreSQL", "Database", "deliveries, drivers")
+ContainerDb(redis_db, "Redis", "Cache", "GPS locations (geo)")
+System_Ext(google_maps, "Google Maps API", "External", "Routes & traffic")
+System_Ext(firebase, "Firebase FCM", "External", "Push notifications")
+
+' ====================
+' FLOW: AUTO-ASSIGN DRIVER
+' ====================
+Rel(event_bus_ext, order_event_listener, "1. OrderConfirmedEvent", "AMQP")
+Rel(order_event_listener, assign_driver_usecase, "2. Execute", "Command")
+
+Rel(assign_driver_usecase, driver_repo_port, "3. Find available", "Port interface")
+Rel(driver_repo_port, redis_location_adapter, "4. GEORADIUS", "Adapter")
+Rel(redis_location_adapter, redis_db, "5. Query by proximity", "Redis Geo")
+
+Rel(assign_driver_usecase, assignment_strategy, "6. Choose best", "Domain service")
+Rel(assignment_strategy, maps_port, "7. Calculate distances", "Port interface")
+Rel(maps_port, google_maps_adapter, "8. Implements", "Adapter")
+Rel(google_maps_adapter, google_maps, "9. Distance Matrix API", "HTTPS")
+
+Rel(assign_driver_usecase, delivery, "10. Assign driver", "Aggregate method")
+Rel(delivery, driver_assigned_event, "11. Raises event", "Domain event")
+
+Rel(assign_driver_usecase, delivery_repo_port, "12. Save", "Port interface")
+Rel(delivery_repo_port, postgres_adapter, "13. Implements", "Adapter")
+Rel(postgres_adapter, postgres_db, "14. INSERT", "SQL")
+
+Rel(driver_assigned_event, event_publisher, "15. Publish", "Event")
+Rel(event_publisher, event_bus_ext, "16. Send", "AMQP")
+
+Rel(driver_assigned_event, notification_port, "17. Notify customer", "Port")
+Rel(notification_port, firebase_adapter, "18. Implements", "Adapter")
+Rel(firebase_adapter, firebase, "19. Push notification", "HTTPS")
+
+' ====================
+' FLOW: REAL-TIME TRACKING
+' ====================
+Rel(driver_app, driver_api, "PATCH /api/drivers/location (every 10s)", "REST/HTTP")
+Rel(driver_api, update_location_usecase, "Execute", "Command")
+
+Rel(update_location_usecase, driver, "Update location", "Aggregate method")
+Rel(driver, location_updated_event, "Raises event", "Domain event")
+
+Rel(update_location_usecase, driver_repo_port, "Save position", "Port")
+Rel(driver_repo_port, redis_location_adapter, "GEOADD", "Adapter")
+Rel(redis_location_adapter, redis_db, "Store GPS", "Redis")
+
+Rel(location_updated_event, route_optimizer, "Recalculate ETA", "Domain service")
+Rel(route_optimizer, maps_port, "Get traffic", "Port")
+
+Rel(location_updated_event, tracking_websocket, "Broadcast", "WebSocket")
+Rel(tracking_websocket, tracking_api, "Push to client", "Socket.IO")
+
+' ====================
+' FLOW: COMPLETE DELIVERY
+' ====================
+Rel(driver_app, driver_api, "POST /api/deliveries/:id/complete", "REST/HTTP")
+Rel(driver_api, complete_delivery_usecase, "Execute", "Command")
+
+Rel(complete_delivery_usecase, delivery, "Complete", "Aggregate method")
+Rel(delivery, delivery_completed_event, "Raises event", "Domain event")
+
+Rel(delivery_completed_event, performance_calculator, "Calculate metrics", "Domain service")
+Rel(delivery_completed_event, event_publisher, "Publish", "Event")
+
+' ====================
+' NOTES
+' ====================
+note right of domain
+  **BUSINESS RULES**
+
+  🚚 **Assignment:**
+  • Distance < 5km prioritaire
+  • Rating > 4.0 minimum
+  • Max 3 livraisons simultanées
+
+  📍 **Tracking:**
+  • Mise à jour GPS toutes les 10s
+  • Géo-fencing validation
+  • Cache Redis (30s TTL)
+
+  ⏰ **ETA:**
+  • Trafic temps réel
+  • Historique livreur
+  • Ajusté dynamiquement
+
+  **Benefits:**
+  ✅ Livraison optimale
+  ✅ Suivi précis
+  ✅ Satisfaction client
+end note
+
+note left of primary_adapters
+  **ENTRÉES DU SYSTÈME**
+
+  📱 **Driver App:**
+  • REST API standard
+  • Endpoints temps réel
+  • Optimisé mobile
+
+  📨 **Event Listener:**
+  • Réagit aux commandes
+  • Auto-assignment
+  • Asynchrone
+
+  🌐 **WebSocket:**
+  • Suivi en direct
+  • Broadcast positions
+  • Bi-directionnel
+end note
+
+note bottom of secondary_adapters
+  **SORTIES DU SYSTÈME**
+
+  **Redis Geo:**
+  • GEOADD pour positions GPS
+  • GEORADIUS pour proximité
+  • Très performant (< 10ms)
+
+  **Google Maps:**
+  • Distance Matrix (batch)
+  • Directions API (routes)
+  • Traffic data (temps réel)
+
+  **Firebase Push:**
+  • Notifications mobiles
+  • Delivery iOS/Android
+  • Fiable et rapide
+end note
+
+note as n1
+  **FLUX: Assigner Livreur**
+
+  1️⃣ **Event Bus** reçoit OrderConfirmedEvent
+  2️⃣ **Use Case** orchestre:
+     • Trouve livreurs dispos (Redis Geo)
+     • Calcule distances (Google Maps)
+     • Applique stratégie (Domain Service)
+     • Choisit meilleur livreur
+     • Assigne livraison
+     • Sauve dans Postgres
+     • Publie DriverAssignedEvent
+     • Notifie client (Firebase Push)
+
+  ⏱️ **Temps total: < 2 secondes**
+
+  **Tracking temps réel:**
+  • Livreur update GPS toutes les 10s
+  • Redis cache position
+  • WebSocket broadcast au client
+  • ETA recalculé avec traffic
+end note
+
+footer Service LOGISTIQUE - N3 Components | Architecture Hexagonale
+
+@enduml

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  presentation:
+    build: .
+    image: pres-maalsi:latest
+    container_name: presentation-good-food
+    ports:
+      - "80:80"
+    volumes:
+      # Persist the repo so we don't re-clone every time, just pull
+      - presentation-data:/usr/share/nginx/html
+    restart: always
+
+volumes:
+  presentation-data:
+

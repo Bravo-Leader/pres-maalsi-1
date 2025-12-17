@@ -20,7 +20,7 @@ let slideLoader;
  * Initialize the presentation
  */
 async function init() {
-    console.log('[INIT] Initializing presentation...');
+    console.log('[INIT] Initializing presentation... v2'); // Bump version to force module refresh if cached
 
     // Initialize slide loader
     slideLoader = new SlideLoader();
@@ -49,8 +49,20 @@ async function init() {
     inputManager = new InputManager(slideManager);
 
     // Initialize carousels (after slides are loaded)
-    setupMatrixCarousel();
-    setupAnalysisCarousel();
+    console.log('[INIT] Setting up carousels...');
+    try {
+        setupMatrixCarousel();
+        console.log('[INIT] Matrix carousel setup complete');
+    } catch (e) {
+        console.error('[INIT] Matrix carousel setup failed:', e);
+    }
+
+    try {
+        setupAnalysisCarousel();
+        console.log('[INIT] Analysis carousel setup complete');
+    } catch (e) {
+        console.error('[INIT] Analysis carousel setup failed:', e);
+    }
 
     // Show first slide
     slideManager.showSlide(1);

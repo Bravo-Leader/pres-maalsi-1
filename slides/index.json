@@ -1,0 +1,105 @@
+{
+  "total": 25,
+  "slides": [
+    {
+      "number": 1,
+      "file": "slide-01-Architecture-Good-Food-30.html"
+    },
+    {
+      "number": 2,
+      "file": "slide-02-Architecture-AS-IS-Contexte.html"
+    },
+    {
+      "number": 3,
+      "file": "slide-03-Architecture-Technique-Actuelle-N2.html"
+    },
+    {
+      "number": 4,
+      "file": "slide-04-Exigences-Non-Fonctionnelles.html"
+    },
+    {
+      "number": 5,
+      "file": "slide-05-Démarche-de-Conception-Architecture.html"
+    },
+    {
+      "number": 6,
+      "file": "slide-06-Comparaison-des-Styles-Architecturaux.html"
+    },
+    {
+      "number": 7,
+      "file": "slide-07-Justification-des-Choix-Architecturaux.html"
+    },
+    {
+      "number": 8,
+      "file": "slide-08-Architecture-Cible-TO-BE-Contexte.html"
+    },
+    {
+      "number": 9,
+      "file": "slide-09-Architecture-Hexagonale-Détaillée-N2.html"
+    },
+    {
+      "number": 10,
+      "file": "slide-10-Détail-Service-Commande-N3.html"
+    },
+    {
+      "number": 11,
+      "file": "slide-11-Vue-Client-Expérience-Utilisateur.html"
+    },
+    {
+      "number": 12,
+      "file": "slide-12-Vue-Franchisé-Gestion-Restaurant.html"
+    },
+    {
+      "number": 13,
+      "file": "slide-13-Vue-Livreur-Livraison-Sécurisée.html"
+    },
+    {
+      "number": 14,
+      "file": "slide-14-Vue-Administrateur-Supervision-Réseau.html"
+    },
+    {
+      "number": 15,
+      "file": "slide-15-Comparaison-AvantAprès.html"
+    },
+    {
+      "number": 16,
+      "file": "slide-16-Matrice-de-Choix-Technologiques.html"
+    },
+    {
+      "number": 17,
+      "file": "slide-17-Stack-Technologique-Complète.html"
+    },
+    {
+      "number": 18,
+      "file": "slide-18-Points-Faibles-du-SI-Actuel.html"
+    },
+    {
+      "number": 19,
+      "file": "slide-19-Axes-dAmélioration-Prioritaires.html"
+    },
+    {
+      "number": 20,
+      "file": "slide-20-ROI-et-Bénéfices-Attendus.html"
+    },
+    {
+      "number": 21,
+      "file": "slide-21-Organisation-de-lÉquipe.html"
+    },
+    {
+      "number": 22,
+      "file": "slide-22-Points-Forts-de-lÉquipe.html"
+    },
+    {
+      "number": 23,
+      "file": "slide-23-Axes-dAmélioration-de-lÉquipe.html"
+    },
+    {
+      "number": 24,
+      "file": "slide-24-Résumé-Exécutif.html"
+    },
+    {
+      "number": 25,
+      "file": "slide-25-Slide-25.html"
+    }
+  ]
+}

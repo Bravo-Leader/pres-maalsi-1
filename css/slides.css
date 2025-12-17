@@ -1,0 +1,116 @@
+/* Slide Container and Layout */
+.slide-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: var(--slide-padding);
+    background: var(--bg-gradient);
+    color: white;
+    animation: slideIn var(--transition-slow);
+}
+
+.slide.active {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-header {
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.slide-number {
+    font-size: 1em;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.slide-footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85em;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.title-slide h1 {
+    font-size: 4.5em;
+    margin-bottom: 25px;
+}
+
+.title-slide .subtitle {
+    font-size: 1.8em;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+/* Scrollable Content */
+.scrollable-content {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 15px;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+}
+
+@media print {
+    .navigation, .slide-indicator, .progress-bar {
+        display: none;
+    }
+    .slide {
+        page-break-after: always;
+        display: block !important;
+        position: relative;
+    }
+}

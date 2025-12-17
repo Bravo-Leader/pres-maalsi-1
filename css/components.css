@@ -1,0 +1,176 @@
+/* UI Components */
+
+/* Matrix Carousel */
+.matrix-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 60px;
+}
+
+.matrix-carousel-container {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.matrix-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+    padding: 0 20px;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn-prev {
+    left: 10px;
+}
+
+.carousel-btn-next {
+    right: 10px;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.carousel-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicator.active {
+    background: rgba(255, 255, 255, 0.9);
+    width: 30px;
+    border-radius: 5px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin: 3px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.badge-critical {
+    background: var(--badge-critical);
+}
+
+.badge-high {
+    background: var(--badge-high);
+}
+
+.badge-success {
+    background: var(--badge-success);
+}
+
+.big-number {
+    font-size: 4em;
+    font-weight: bold;
+    text-align: center;
+    margin: 15px 0;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+}
+
+.highlight {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.score-high {
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.score-low {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Diagram Container */
+.diagram-container {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
+
+.diagram-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.diagram-container img:hover {
+    transform: scale(1.02);
+}
+
+.zoom-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(52, 152, 219, 0.9);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: var(--z-zoom-icon);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.zoom-icon:hover {
+    background: rgba(41, 128, 185, 1);
+    transform: scale(1.1);
+}

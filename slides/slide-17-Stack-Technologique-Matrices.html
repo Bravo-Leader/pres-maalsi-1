@@ -1,0 +1,257 @@
+<div class="slide" data-slide="17">
+    <div class="slide-header">
+        <div class="slide-number">Slide 17/25</div>
+        <h2>🛠️ Stack Technologique - Matrices de Choix</h2>
+    </div>
+    <div class="slide-content">
+        <div class="matrix-carousel" id="matrixCarousel">
+            <button class="carousel-btn carousel-btn-prev" onclick="changeMatrix(-1)">◀</button>
+            <button class="carousel-btn carousel-btn-next" onclick="changeMatrix(1)">▶</button>
+
+            <div class="matrix-carousel-container" id="matrixContainer">
+                <!-- Matrix 1: Cloud Provider -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 20px;">☁️ Cloud Provider</h3>
+                    <div class="two-columns">
+                        <div>
+                            <h4>Critères</h4>
+                            <table style="font-size: 0.9em;">
+                                <tr><td><strong>Fonctionnalités</strong></td><td>25%</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>20%</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>15%</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>15%</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>10%</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>10%</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5%</td></tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h4>Comparaison</h4>
+                            <table style="font-size: 0.9em;">
+                                <thead>
+                                    <tr><th>Critère</th><th>AWS</th><th>Azure</th><th>GCP</th><th>OVH</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Fonct.</td><td>5</td><td>4</td><td>4</td><td>4</td></tr>
+                                    <tr><td>Perf.</td><td>5</td><td>5</td><td>5</td><td>4</td></tr>
+                                    <tr><td>Coût</td><td>2</td><td>3</td><td>3</td><td>5</td></tr>
+                                    <tr><td>Matur.</td><td>5</td><td>4</td><td>4</td><td>4</td></tr>
+                                    <tr><td>Facil.</td><td>3</td><td>3</td><td>3</td><td>5</td></tr>
+                                    <tr><td>Évol.</td><td>5</td><td>5</td><td>5</td><td>4</td></tr>
+                                    <tr><td>Intég.</td><td>5</td><td>4</td><td>4</td><td>4</td></tr>
+                                    <tr style="background: rgba(46, 204, 113, 0.2);">
+                                        <td><strong>Total</strong></td>
+                                        <td>4.15</td>
+                                        <td>3.95</td>
+                                        <td>3.95</td>
+                                        <td class="score-high">4.30 ✅</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="margin-top: 15px; font-size: 0.95em;">
+                                <span class="badge badge-success">OVH VPS/Bare Metal</span>
+                                <br><small>🇫🇷 Souverain • RGPD • Facilité équipe • -40% coût</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Matrix 2: Base de Données -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">💾 Base de Données</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>PostgreSQL</th><th>MySQL</th><th>MongoDB</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>4</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">4.85 ✅</td>
+                                    <td>4.55</td>
+                                    <td>4.35</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">PostgreSQL</span>
+                            <br><small>ACID complet • Support JSON • Performant • Open source</small>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matrix 3: Message Queue -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">📨 Message Queue</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>RabbitMQ</th><th>Kafka</th><th>Redis Streams</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>4</td><td>5</td><td>3</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>4</td><td>5</td><td>5</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>5</td><td>3</td><td>5</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>4</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">4.50 ✅</td>
+                                    <td>4.45</td>
+                                    <td>4.25</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">RabbitMQ</span>
+                            <br><small>Simple • Fiable • Facile pour l'équipe • Patterns riches</small>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matrix 4: Backend Framework -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">⚙️ Backend Framework</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>Node.js</th><th>Spring Boot</th><th>Django</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>4</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>4</td><td>5</td><td>3</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>5</td><td>5</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>5</td><td>5</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>5</td><td>3</td><td>4</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>4</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>4</td><td>3</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">4.50 ✅</td>
+                                    <td>4.45</td>
+                                    <td>3.95</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">Node.js + Express</span>
+                            <br><small>Full-stack JS • Écosystème npm • Async natif • Facile équipe</small>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matrix 5: Frontend Framework -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">🎨 Frontend Framework</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>React</th><th>Vue.js</th><th>Angular</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>5</td><td>5</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>4</td><td>5</td><td>3</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">4.85 ✅</td>
+                                    <td>4.45</td>
+                                    <td>4.40</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">React + TypeScript</span>
+                            <br><small>Écosystème riche • React Native • TypeScript • Communauté</small>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matrix 6: CI/CD -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">🔄 CI/CD Pipeline</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>GitLab CI</th><th>GitHub Actions</th><th>Jenkins</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>4</td><td>5</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>5</td><td>5</td><td>3</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>4</td><td>3</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">5.00 ✅</td>
+                                    <td>4.30</td>
+                                    <td>3.95</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">GitLab CI/CD</span>
+                            <br><small>Complet • Facile équipe • Intégré Git • Auto DevOps</small>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Matrix 7: Monitoring -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 30px;">📊 Monitoring & Observabilité</h3>
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <table style="font-size: 1.1em; width: 100%;">
+                            <thead>
+                                <tr><th>Critère</th><th>Prom+Grafana</th><th>Datadog</th><th>ELK Stack</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Fonctionnalités</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Coût</strong></td><td>5</td><td>2</td><td>4</td></tr>
+                                <tr><td><strong>Maturité</strong></td><td>5</td><td>5</td><td>5</td></tr>
+                                <tr><td><strong>Facilité</strong></td><td>4</td><td>5</td><td>3</td></tr>
+                                <tr><td><strong>Évolutivité</strong></td><td>5</td><td>5</td><td>4</td></tr>
+                                <tr><td><strong>Intégration</strong></td><td>5</td><td>4</td><td>4</td></tr>
+                                <tr style="background: rgba(46, 204, 113, 0.2);">
+                                    <td><strong>Total Pondéré</strong></td>
+                                    <td class="score-high">4.85 ✅</td>
+                                    <td>4.25</td>
+                                    <td>3.95</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 25px; text-align: center; font-size: 1.05em;">
+                            <span class="badge badge-success">Prometheus + Grafana</span>
+                            <br><small>Open source • Scalable • Alerting puissant • Communauté</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-indicators" id="matrixIndicators"></div>
+        </div>
+
+        <div style="margin-top: 15px; padding: 12px; background: rgba(52, 152, 219, 0.1); border-radius: 10px; font-size: 0.9em;">
+            <strong>🏗️ Infrastructure:</strong> OVH VPS/Bare Metal • Simple pour l'équipe • 5-10 serveurs phase 1 • Migration K8s phase 2
+        </div>
+    </div>
+    <div class="slide-footer">
+        <span>Naviguez avec ← → ou les boutons</span>
+        <span>Slide 17/25</span>
+    </div>
+</div>

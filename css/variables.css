@@ -1,0 +1,32 @@
+/* CSS Variables and Theme Configuration */
+:root {
+    /* Colors */
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    /* Badge Colors */
+    --badge-critical: #e74c3c;
+    --badge-high: #f39c12;
+    --badge-success: #27ae60;
+
+    /* Spacing */
+    --slide-padding: 40px 60px;
+    --content-gap: 30px;
+    --small-gap: 15px;
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease-in-out;
+
+    /* Z-index layers */
+    --z-progress: 1000;
+    --z-navigation: 1000;
+    --z-indicators: 1000;
+    --z-zoom-icon: 10;
+    --z-zoom-modal: 10000;
+}

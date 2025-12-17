@@ -4,91 +4,117 @@
         <h2>🔴 Points Faibles et Analyse de Risques</h2>
     </div>
     <div class="slide-content">
-        <div class="three-columns">
-            <div class="content-box">
-                <h3>1. Points Faibles (Legacy)</h3>
-                <ul style="font-size: 0.8em; padding-left: 15px;">
-                    <li><strong>Obsolescence:</strong> ASP.NET 2005, Win 2008 R2 (Fin support)</li>
-                    <li><strong>Architecture:</strong> Monolithe couplé, SPOF unique</li>
-                    <li><strong>Performance:</strong> > 5s, Sync J+1, Pas de temps réel</li>
-                    <li><strong>Sécurité:</strong> HTTP clair, Pas de conformité RGPD/PCI-DSS</li>
-                    <li><strong>Maintenance:</strong> Code spaghetti, Pas de documentation</li>
-                </ul>
-            </div>
-            
-            <div class="content-box">
-                <h3>2. Matrice SWOT (SI Actuel)</h3>
-                <table style="font-size: 0.75em; width: 100%;">
-                    <tr>
-                        <td style="background: rgba(46, 204, 113, 0.1); width: 50%;">
-                            <strong>Forces</strong>
-                            <br>- Base données centralisée
-                            <br>- ERP Dynamics solide
-                        </td>
-                        <td style="background: rgba(231, 76, 60, 0.1);">
-                            <strong>Faiblesses</strong>
-                            <br>- Techno obsolète
-                            <br>- Pas d'API / Mobile
-                            <br>- Sécurité critique
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="background: rgba(52, 152, 219, 0.1);">
-                            <strong>Opportunités</strong>
-                            <br>- Cloud (Scalabilité)
-                            <br>- Marché Mobile (+25%)
-                            <br>- DevOps (Agilité)
-                        </td>
-                        <td style="background: rgba(241, 196, 15, 0.1);">
-                            <strong>Menaces</strong>
-                            <br>- Cyberattaques (Rançongiciel)
-                            <br>- Perte Certif. (Sanctions)
-                            <br>- Concurrence (UberEats)
-                        </td>
-                    </tr>
-                </table>
+        <div class="matrix-carousel">
+            <button class="carousel-btn carousel-btn-prev" onclick="changeAnalysisSlide(-1)">◀</button>
+            <button class="carousel-btn carousel-btn-next" onclick="changeAnalysisSlide(1)">▶</button>
+
+            <div class="matrix-carousel-container" id="analysisContainer">
+                
+                <!-- Slide 1: Points Faibles -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 20px;">1. Points Faibles (Legacy)</h3>
+                    <div class="content-box" style="max-width: 800px; margin: 0 auto;">
+                        <ul style="font-size: 1em; padding: 20px; line-height: 1.6;">
+                            <li style="margin-bottom: 10px;"><strong>Obsolescence:</strong> ASP.NET 2005, Win 2008 R2 (Fin support)</li>
+                            <li style="margin-bottom: 10px;"><strong>Architecture:</strong> Monolithe couplé, SPOF unique</li>
+                            <li style="margin-bottom: 10px;"><strong>Performance:</strong> > 5s, Sync J+1, Pas de temps réel</li>
+                            <li style="margin-bottom: 10px;"><strong>Sécurité:</strong> HTTP clair, Pas de conformité RGPD/PCI-DSS</li>
+                            <li><strong>Maintenance:</strong> Code spaghetti, Pas de documentation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 2: SWOT -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 20px;">2. Matrice SWOT (SI Actuel)</h3>
+                    <div class="content-box" style="max-width: 900px; margin: 0 auto;">
+                        <table style="font-size: 0.9em; width: 100%;">
+                            <tr>
+                                <td style="background: rgba(46, 204, 113, 0.15); width: 50%; padding: 15px;">
+                                    <strong style="color: #1e8449; font-size: 1.1em; display: block; margin-bottom: 8px;">Forces</strong>
+                                    <ul style="margin-top: 5px; padding-left: 15px;">
+                                        <li>Base données centralisée</li>
+                                        <li>ERP Dynamics solide</li>
+                                    </ul>
+                                </td>
+                                <td style="background: rgba(231, 76, 60, 0.15); padding: 15px;">
+                                    <strong style="color: #922b21; font-size: 1.1em; display: block; margin-bottom: 8px;">Faiblesses</strong>
+                                    <ul style="margin-top: 5px; padding-left: 15px;">
+                                        <li>Techno obsolète</li>
+                                        <li>Pas d'API / Mobile</li>
+                                        <li>Sécurité critique</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background: rgba(52, 152, 219, 0.15); padding: 15px;">
+                                    <strong style="color: #1f618d; font-size: 1.1em; display: block; margin-bottom: 8px;">Opportunités</strong>
+                                    <ul style="margin-top: 5px; padding-left: 15px;">
+                                        <li>Cloud (Scalabilité)</li>
+                                        <li>Marché Mobile (+25%)</li>
+                                        <li>DevOps (Agilité)</li>
+                                    </ul>
+                                </td>
+                                <td style="background: rgba(241, 196, 15, 0.15); padding: 15px;">
+                                    <strong style="color: #d35400; font-size: 1.1em; display: block; margin-bottom: 8px;">Menaces</strong>
+                                    <ul style="margin-top: 5px; padding-left: 15px;">
+                                        <li>Cyberattaques (Rançongiciel)</li>
+                                        <li>Perte Certif. (Sanctions)</li>
+                                        <li>Concurrence (UberEats)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Slide 3: AMDEC -->
+                <div class="matrix-slide">
+                    <h3 style="text-align: center; margin-bottom: 20px;">3. AMDEC (Analyse Risques)</h3>
+                    <div class="content-box" style="max-width: 900px; margin: 0 auto;">
+                        <table style="font-size: 0.85em; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Défaillance</th>
+                                    <th>G</th>
+                                    <th>F</th>
+                                    <th>D</th>
+                                    <th>C</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Crash Serveur (SPOF)</strong><br><small>Arrêt total ventes</small></td>
+                                    <td>5</td>
+                                    <td>2</td>
+                                    <td>1</td>
+                                    <td class="score-low" style="color: #e74c3c; font-weight: bold;">10</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vol Données (HTTP)</strong><br><small>Fuite clients/CB</small></td>
+                                    <td>5</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td class="score-low" style="color: #e74c3c; font-weight: bold;">60</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Panne Sync (Batch)</strong><br><small>Stock faux, Cmds perdues</small></td>
+                                    <td>4</td>
+                                    <td>4</td>
+                                    <td>3</td>
+                                    <td class="score-low" style="color: #e74c3c; font-weight: bold;">48</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size: 0.8em; margin-top: 10px; text-align: right; color: #666;">
+                            <em>C (Criticité) = Gravité x Fréquence x Détection</em>
+                        </p>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="content-box">
-                <h3>3. AMDEC (Analyse Risques)</h3>
-                <table style="font-size: 0.7em; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Défaillance</th>
-                            <th>G</th>
-                            <th>F</th>
-                            <th>D</th>
-                            <th>C</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Crash Serveur (SPOF)</strong><br>Arrêt total ventes</td>
-                            <td>5</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td class="score-low">10</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Vol Données (HTTP)</strong><br>Fuite clients/CB</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td class="score-low">60</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Panne Sync (Batch)</strong><br>Stock faux, Cmds perdues</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td class="score-low">48</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p style="font-size: 0.7em; margin-top: 5px; text-align: right;">
-                    <em>C = Gravité x Fréquence x Détection</em>
-                </p>
-            </div>
+            <div class="carousel-indicators" id="analysisIndicators"></div>
         </div>
     </div>
     <div class="slide-footer">

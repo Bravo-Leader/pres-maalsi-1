@@ -7,6 +7,7 @@ import { IndicatorManager } from './indicatorManager.js';
 import { InputManager } from './inputManager.js';
 import { SlideLoader } from './slideLoader.js';
 import { setupMatrixCarousel } from './setupMatrix.js';
+import { setupAnalysisCarousel } from './setupAnalysis.js';
 
 // Initialize managers
 let slideManager;
@@ -47,9 +48,9 @@ async function init() {
     // Initialize input manager
     inputManager = new InputManager(slideManager);
 
-    // Initialize matrix carousel (after slides are loaded)
-    // Now uses the new setupMatrix.js which handles rendering AND logic
+    // Initialize carousels (after slides are loaded)
     setupMatrixCarousel();
+    setupAnalysisCarousel();
 
     // Show first slide
     slideManager.showSlide(1);

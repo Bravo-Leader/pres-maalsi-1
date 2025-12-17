@@ -1,5 +1,5 @@
 {
-  "total": 25,
+  "total": 21,
   "slides": [
     {
       "number": 1,
@@ -79,26 +79,10 @@
     },
     {
       "number": 20,
-      "file": "slide-20-ROI-et-Bénéfices-Attendus.html"
-    },
-    {
-      "number": 21,
-      "file": "slide-21-Organisation-de-lÉquipe.html"
-    },
-    {
-      "number": 22,
-      "file": "slide-22-Points-Forts-de-lÉquipe.html"
-    },
-    {
-      "number": 23,
-      "file": "slide-23-Axes-dAmélioration-de-lÉquipe.html"
-    },
-    {
-      "number": 24,
       "file": "slide-24-Résumé-Exécutif.html"
     },
     {
-      "number": 25,
+      "number": 21,
       "file": "slide-25-Slide-25.html"
     }
   ]

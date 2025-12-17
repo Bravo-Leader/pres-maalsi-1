@@ -2,16 +2,32 @@ version: '3.8'
 
 services:
   presentation:
-    build: .
-    image: pres-maalsi:latest
+    image: nginx:alpine
     container_name: presentation-good-food
     ports:
       - "80:80"
     volumes:
-      # Persist the repo so we don't re-clone every time, just pull
       - presentation-data:/usr/share/nginx/html
     restart: always
+    # Install git, pull/clone repo, then start nginx
+    # We use sh -c to run multiple commands
+    command: >
+      /bin/sh -c "
+      apk add --no-cache git &&
+      cd /usr/share/nginx/html &&
+      if [ -d .git ]; then
+        echo 'Repo exists, pulling latest changes...';
+        git fetch origin main &&
+        git reset --hard origin/main;
+      else
+        echo 'Repo not found, cloning...';
+        # Remove default nginx files to allow clone
+        rm -rf ./*;
+        git clone https://github.com/Bravo-Leader/pres-maalsi-1.git . ;
+      fi &&
+      echo 'Starting Nginx...' &&
+      exec nginx -g 'daemon off;'
+      "
 
 volumes:
   presentation-data:
-

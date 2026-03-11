@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python extract-slides.py:*)",
+      "Bash(cat:*)"
+    ]
+  }
+}

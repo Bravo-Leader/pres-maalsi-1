@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Good Food 3.0 - Présentation</title>
+
+    <!-- CSS Modules -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/layouts.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/zoom-modal.css">
+    <link rel="stylesheet" href="css/theme-popup.css">
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Slide Container -->
+    <div class="slide-container">
+<!-- SLIDE 1: PAGE DE TITRE -->
+        <div class="slide active title-slide" data-slide="1">
+            <h1>Architecture Good Food 3.0</h1>
+            <p class="subtitle">Projet Collaboratif - Architecture Logicielle</p>
+            <p style="font-size: 1.3em; margin-top: 80px;">CESI MAALSI - INFMAALSIAPC1</p>
+        </div>
+
+        <!-- SLIDE 2: CONTEXTE GOOD FOOD -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <div class="slide-number">Slide 2/25</div>
+                <h2>Good Food - Contexte de l'Entreprise</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>Historique</h3>
+                        <div class="content-box">
+                            <ul style="font-size: 0.95em; line-height: 1.7;">
+                                <li><strong>1992:</strong> Creation - Fusion de 4 entreprises de restauration</li>
+                                <li><strong>1995:</strong> Creation de la franchise commerciale</li>
+                                <li><strong>1998:</strong> 1ere application de commande en ligne (Java)</li>
+                                <li><strong>2005:</strong> Refonte en ASP.NET / C#</li>
+                                <li><strong>Aujourd'hui:</strong> Besoin de refonte complete (Good Food 3.0)</li>
+                            </ul>
+                        </div>
+                        <h3 style="margin-top: 15px;">Activites</h3>
+                        <div class="content-box">
+                            <ul style="font-size: 0.95em;">
+                                <li>Restauration conventionnelle</li>
+                                <li>Vente a emporter</li>
+                                <li>Livraison de repas (commande en ligne)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Chiffres Cles</h3>
+                        <div class="grid-stats" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-number">150</div>
+                                <div class="stat-label">Restaurants<br>FR/BE/LU</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">1000</div>
+                                <div class="stat-label">Collaborateurs</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">200</div>
+                                <div class="stat-label">Recettes<br>proposees</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">1M</div>
+                                <div class="stat-label">Repas livres<br>en 2023</div>
+                            </div>
+                        </div>
+                        <div class="content-box" style="margin-top: 15px; background: rgba(52, 152, 219, 0.2);">
+                            <h3>Implantations</h3>
+                            <ul style="font-size: 0.9em;">
+                                <li>20 plus grandes metropoles francaises</li>
+                                <li>Belgique et Luxembourg</li>
+                                <li><strong>80% du CA</strong> via la vente en ligne</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Architecture Good Food 3.0</span>
+                <span>CESI MAALSI</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: SOMMAIRE -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <div class="slide-number">Slide 3/25</div>
+                <h2>Parcours de la Presentation</h2>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: 100%;">
+                    <!-- Row 1 -->
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #e74c3c; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 4-5</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #e74c3c;">1. Analyse AS-IS</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Contexte actuel et architecture existante</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #3498db; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 6-8</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #3498db;">2. Exigences</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">NFR, demarche C4/TOGAF, Discovery RICE</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #9b59b6; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 9-10</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #9b59b6;">3. Choix Archi</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Comparaison styles et justifications</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #2ecc71; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 11-13</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #2ecc71;">4. TO-BE</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Contexte cible et hexagonale N2/N3</p>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #f39c12; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 14-18</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #f39c12;">5. Personas</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Client, Franchise, Livreur, Admin + Comparaison</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #1abc9c; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 19-20</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #1abc9c;">6. Stack Tech</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Matrices de choix et stack complete</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #e67e22; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 21-23</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #e67e22;">7. ROI</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Points faibles, axes d'amelioration, benefices</p>
+                    </div>
+                    <div class="content-box" style="padding: 15px; border-left: 4px solid #95a5a6; display: flex; flex-direction: column;">
+                        <div style="font-size: 0.78em; color: rgba(255,255,255,0.6); margin-bottom: 5px;">SLIDES 24-25</div>
+                        <h3 style="font-size: 0.95em; margin: 0 0 8px 0; color: #95a5a6;">8. Conclusion</h3>
+                        <p style="font-size: 0.9em; margin: 0; opacity: 0.9; flex: 1;">Resume executif et questions</p>
+                    </div>
+                </div>
+                <!-- Flow indicator -->
+                <div style="margin-top: 20px; text-align: center; font-size: 0.85em; opacity: 0.7;">
+                    <span style="display: inline-flex; align-items: center; gap: 15px;">
+                        <span style="color: #e74c3c;">Analyse</span>
+                        <span style="font-size: 1.2em;">→</span>
+                        <span style="color: #3498db;">Conception</span>
+                        <span style="font-size: 1.2em;">→</span>
+                        <span style="color: #2ecc71;">Architecture</span>
+                        <span style="font-size: 1.2em;">→</span>
+                        <span style="color: #1abc9c;">Technologies</span>
+                        <span style="font-size: 1.2em;">→</span>
+                        <span style="color: #e67e22;">Benefices</span>
+                    </span>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Architecture Good Food 3.0</span>
+                <span>CESI MAALSI</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: CONTEXTE ACTUEL (AS-IS) -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <div class="slide-number">Slide 4/25</div>
+                <h2>📊 Analyse de l'Existant (AS-IS)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>Schéma du SI Existant</h3>
+                        <div class="diagram-container">
+                            <img src="images/slide2-as-is-contexte.png" alt="Architecture AS-IS Contexte" style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                    <div class="content-box">
+                        <h3>Applications et Interactions</h3>
+                        <ul style="font-size: 0.95em;">
+                            <li><strong>Site Web:</strong> ASP.NET 2005 (obsolète)</li>
+                            <li><strong>ERP:</strong> Dynamics 365</li>
+                            <li><strong>Sage:</strong> Comptabilité</li>
+                            <li><strong>Sync:</strong> 1x/jour (problématique)</li>
+                        </ul>
+                        <div style="margin-top: 25px;">
+                            <h3>Points Critiques</h3>
+                            <span class="badge badge-critical">Technologie obsolète</span>
+                            <span class="badge badge-critical">Performance < 5s</span>
+                            <span class="badge badge-critical">Pas d'app mobile</span>
+                            <span class="badge badge-critical">Non-conformité RGPD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Good Food 3.0 - Architecture Logicielle</span>
+                <span>CESI MAALSI</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: ARCHITECTURE ACTUELLE DÉTAILLÉE -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <div class="slide-number">Slide 5/25</div>
+                <h2>🏗️ Architecture Technique Actuelle (N2)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide3-as-is-architecture.png" alt="Architecture AS-IS N2" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Systeme existant - Limitations majeures</span>
+                <span>Slide 5/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: EXIGENCES NON-FONCTIONNELLES -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <div class="slide-number">Slide 6/25</div>
+                <h2>🎯 Exigences Non-Fonctionnelles</h2>
+            </div>
+            <div class="slide-content">
+                <div class="scrollable-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exigence</th>
+                                <th>Priorité</th>
+                                <th>Objectif Quantifié</th>
+                                <th>Impact Architecture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>95% pages < 1s</td>
+                                <td>Cache Redis, CDN</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Disponibilité</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>≥ 99.9% uptime</td>
+                                <td>Load balancing, réplication</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sécurité & RGPD</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>100% OAuth2</td>
+                                <td>HTTPS, WAF, auth</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scalabilité</strong></td>
+                                <td><span class="badge badge-high">Moyenne</span></td>
+                                <td>150 → 500+ restos</td>
+                                <td>Microservices, K8s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maintenabilité</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>80% tests</td>
+                                <td>Architecture hexagonale</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Interopérabilité</strong></td>
+                                <td><span class="badge badge-high">Importante</span></td>
+                                <td>Sync < 5 min</td>
+                                <td>APIs REST, événements</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="grid-stats" style="margin-top: 15px;">
+                        <div class="stat-card">
+                            <div class="stat-number">6.3</div>
+                            <div class="stat-label">Performance<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">5.8</div>
+                            <div class="stat-label">Interopérabilité<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3.4</div>
+                            <div class="stat-label">Disponibilité<br>Score RICE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">2.4</div>
+                            <div class="stat-label">Scalabilité<br>Score RICE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Exigences clairement definies avec metriques mesurables</span>
+                <span>Slide 6/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: DEMARCHE DE CONCEPTION -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <div class="slide-number">Slide 7/25</div>
+                <h2>🎨 Demarche de Conception Architecture</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div class="scrollable-content">
+                        <h3>Methodologie: C4 Model + TOGAF</h3>
+                        <div class="architecture-layer" style="background: rgba(52, 152, 219, 0.2); border-left-color: #3498db;">
+                            <strong>Phase 1: Discovery & Analyse</strong> (J1-2)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Etude du contexte Good Food</li>
+                                <li><strong>Discovery Jira</strong> - Collecte exigences</li>
+                                <li>Priorisation RICE des features</li>
+                                <li>Definition des OKRs et KPIs</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 2: Architecture Metier</strong> (J2)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Cartographie ecosysteme</li>
+                                <li>Vue strategique</li>
+                                <li>C4 Niveau 1</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 3: Architecture Applicative</strong> (J3)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Decomposition services</li>
+                                <li>Choix technologies</li>
+                                <li>C4 Niveau 2</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scrollable-content">
+                        <div class="architecture-layer">
+                            <strong>Phase 4: Architecture Technique</strong> (J3-4)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Detail composants</li>
+                                <li>Architecture hexagonale</li>
+                                <li>C4 Niveau 3</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 5: Comparaison</strong> (J4)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Evaluation styles</li>
+                                <li>Matrices decision</li>
+                                <li>Justification choix</li>
+                            </ul>
+                        </div>
+                        <div class="architecture-layer">
+                            <strong>Phase 6: Validation</strong> (J5)
+                            <ul style="font-size: 0.9em; margin-top: 8px;">
+                                <li>Verification coherence</li>
+                                <li>Documentation finale</li>
+                                <li>Presentation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Demarche coherente avec les activites d'architecture logicielle</span>
+                <span>Slide 7/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: DISCOVERY JIRA -->
+        <div class="slide" data-slide="8">
+            <div class="slide-header">
+                <div class="slide-number">Slide 8/25</div>
+                <h2>🔍 Discovery & Priorisation (Jira)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns">
+                    <div>
+                        <h3>Demarche de Discovery</h3>
+                        <div class="content-box">
+                            <ul style="font-size: 0.95em; line-height: 1.7;">
+                                <li><strong>Outil:</strong> Jira Product Discovery</li>
+                                <li><strong>22 exigences</strong> identifiees et documentees</li>
+                                <li>14 fonctionnelles + 8 non-fonctionnelles</li>
+                                <li>Scoring <strong>RICE</strong> pour priorisation</li>
+                                <li>Definition des <strong>OKRs</strong> et <strong>KPIs</strong></li>
+                            </ul>
+                        </div>
+                        <h3 style="margin-top: 15px;">Criteres d'Evaluation</h3>
+                        <div class="content-box">
+                            <ul style="font-size: 0.9em;">
+                                <li><strong>Confiance:</strong> Niveau de certitude (0-100)</li>
+                                <li><strong>Valeur:</strong> Impact business (1-5)</li>
+                                <li><strong>Effort:</strong> Complexite technique (1-5)</li>
+                                <li><strong>Impact/Portee:</strong> Utilisateurs touches</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Top Priorites (Score RICE)</h3>
+                        <table style="font-size: 0.85em;">
+                            <thead>
+                                <tr><th>Exigence</th><th>RICE</th><th>Priorite</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Authentification clients</td><td>10.6</td><td><span class="badge badge-high">Importante</span></td></tr>
+                                <tr><td>Consultation menus</td><td>7.5</td><td><span class="badge badge-high">Importante</span></td></tr>
+                                <tr><td>Gestion panier</td><td>7.3</td><td><span class="badge badge-critical">Critique</span></td></tr>
+                                <tr><td>Performance (&lt;1s)</td><td>6.3</td><td><span class="badge badge-high">Importante</span></td></tr>
+                                <tr><td>Interoperabilite</td><td>5.8</td><td><span class="badge badge-high">Importante</span></td></tr>
+                                <tr><td>Paiement securise</td><td>4.7</td><td><span class="badge badge-critical">Critique</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Discovery realise sur Jira Product Discovery</span>
+                <span>Slide 8/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: COMPARAISON STYLES ARCHITECTURAUX -->
+        <div class="slide" data-slide="9">
+            <div class="slide-header">
+                <div class="slide-number">Slide 9/25</div>
+                <h2>⚖️ Comparaison des Styles Architecturaux</h2>
+            </div>
+            <div class="slide-content">
+                <div class="scrollable-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Style</th>
+                                <th>Perf</th>
+                                <th>Scale</th>
+                                <th>Maint</th>
+                                <th>Évol</th>
+                                <th>Comp</th>
+                                <th>Coût</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monolithique</td>
+                                <td>4/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td>5/5</td>
+                                <td class="score-low">17/30 ❌</td>
+                            </tr>
+                            <tr>
+                                <td>En Couches</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>4/5</td>
+                                <td>19/30</td>
+                            </tr>
+                            <tr>
+                                <td>SOA</td>
+                                <td>3/5</td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td>21/30</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Microservices</strong></td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td class="score-high">23/30 ✅</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Hexagonale</strong></td>
+                                <td>4/5</td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>3/5</td>
+                                <td>3/5</td>
+                                <td class="score-high">24/30 ✅</td>
+                            </tr>
+                            <tr style="background: rgba(46, 204, 113, 0.2);">
+                                <td><strong>Event-Driven</strong></td>
+                                <td>5/5</td>
+                                <td>5/5</td>
+                                <td>4/5</td>
+                                <td>5/5</td>
+                                <td>2/5</td>
+                                <td>2/5</td>
+                                <td class="score-high">23/30 ✅</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 30px; text-align: center;">
+                        <h3>✅ Architecture Retenue</h3>
+                        <p style="font-size: 1.3em; margin-top: 15px;">
+                            <span class="highlight">Microservices</span> +
+                            <span class="highlight">Hexagonale</span> +
+                            <span class="highlight">Event-Driven</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Comparaison tenant compte des exigences non-fonctionnelles</span>
+                <span>Slide 9/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: JUSTIFICATION DES CHOIX -->
+        <div class="slide" data-slide="10">
+            <div class="slide-header">
+                <div class="slide-number">Slide 10/25</div>
+                <h2>✅ Justification des Choix Architecturaux</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box scrollable-content">
+                        <h3>🏗️ Microservices</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Scalabilité:</strong> 150 → 500+ restos</li>
+                            <li><strong>Résilience:</strong> Isolation pannes</li>
+                            <li><strong>Évolutivité:</strong> Nouveaux services</li>
+                            <li><strong>Équipes:</strong> Autonomie</li>
+                        </ul>
+                    </div>
+                    <div class="content-box scrollable-content">
+                        <h3>⬡ Hexagonale</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Testabilité:</strong> Cœur isolé</li>
+                            <li><strong>Indépendance:</strong> Technologie</li>
+                            <li><strong>Clarté:</strong> Métier/infra</li>
+                            <li><strong>Évolution:</strong> Adapter métier</li>
+                        </ul>
+                    </div>
+                    <div class="content-box scrollable-content">
+                        <h3>⚡ Event-Driven</h3>
+                        <ul style="font-size: 0.9em;">
+                            <li><strong>Découplage:</strong> Async</li>
+                            <li><strong>Performance:</strong> Background</li>
+                            <li><strong>Traçabilité:</strong> Event Store</li>
+                            <li><strong>Sync ERP:</strong> Temps réel</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>❌ Pourquoi PAS Monolithique ?</h3>
+                    <div class="content-box" style="background: rgba(231, 76, 60, 0.2);">
+                        <ul style="font-size: 0.95em;">
+                            <li>Scalabilité insuffisante (2/5) → Impossible 500+ restaurants</li>
+                            <li>Maintenabilité faible (2/5) → Reproduirait code legacy</li>
+                            <li>Évolutivité limitée (2/5) → Déploiements risqués</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Choix coherents avec le contexte Good Food</span>
+                <span>Slide 10/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: ARCHITECTURE CIBLE (TO-BE) CONTEXTE -->
+        <div class="slide" data-slide="11">
+            <div class="slide-header">
+                <div class="slide-number">Slide 11/25</div>
+                <h2>🎯 Architecture Cible (TO-BE) - Contexte</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide8-to-be-contexte.png" alt="Architecture TO-BE Contexte" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Nouvel ecosysteme Good Food 3.0</span>
+                <span>Slide 11/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: ARCHITECTURE HEXAGONALE -->
+        <div class="slide" data-slide="12">
+            <div class="slide-header">
+                <div class="slide-number">Slide 12/25</div>
+                <h2>⬡ Architecture Hexagonale Détaillée (N2)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide9-hexagonale.png" alt="Architecture Hexagonale" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Separation claire metier/infrastructure</span>
+                <span>Slide 12/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: DETAIL SERVICE COMMANDE -->
+        <div class="slide" data-slide="13">
+            <div class="slide-header">
+                <div class="slide-number">Slide 13/25</div>
+                <h2>🛒 Détail Service Commande (N3)</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide10-detail-commande.png" alt="Détail Service Commande" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Exemple: Domaine, Ports, Adapters</span>
+                <span>Slide 13/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: PERSONA CLIENT -->
+        <div class="slide" data-slide="14">
+            <div class="slide-header">
+                <div class="slide-number">Slide 14/25</div>
+                <h2>👤 Vue Client - Expérience Utilisateur</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide11-persona-client.png" alt="Persona Client" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Experience fluide Web + Mobile</span>
+                <span>Slide 14/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: PERSONA FRANCHISE -->
+        <div class="slide" data-slide="15">
+            <div class="slide-header">
+                <div class="slide-number">Slide 15/25</div>
+                <h2>🏪 Vue Franchisé - Gestion Restaurant</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide12-persona-franchise.png" alt="Persona Franchisé" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Dashboard temps reel et gestion autonome</span>
+                <span>Slide 15/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: PERSONA LIVREUR -->
+        <div class="slide" data-slide="16">
+            <div class="slide-header">
+                <div class="slide-number">Slide 16/25</div>
+                <h2>🚴 Vue Livreur - Livraison Sécurisée</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide13-persona-livreur.png" alt="Persona Livreur" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>VoIP entreprise, GPS, detection accident</span>
+                <span>Slide 16/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: PERSONA ADMINISTRATEUR -->
+        <div class="slide" data-slide="17">
+            <div class="slide-header">
+                <div class="slide-number">Slide 17/25</div>
+                <h2>👨‍💼 Vue Administrateur - Supervision Réseau</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide14-persona-admin.png" alt="Persona Administrateur" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Monitoring proactif et configuration centralisee</span>
+                <span>Slide 17/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: COMPARAISON AVANT/APRES -->
+        <div class="slide" data-slide="18">
+            <div class="slide-header">
+                <div class="slide-number">Slide 18/25</div>
+                <h2>🔄 Comparaison Avant/Après</h2>
+            </div>
+            <div class="slide-content">
+                <div class="diagram-container">
+                    <img src="images/slide15-comparaison.png" alt="Comparaison Avant/Après" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Impact quantifie de la nouvelle architecture</span>
+                <span>Slide 18/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: MATRICES DE CHOIX TECHNOLOGIQUES (CARROUSEL) -->
+        <div class="slide" data-slide="19">
+            <div class="slide-header">
+                <div class="slide-number">Slide 19/25</div>
+                <h2>🛠️ Matrices de Choix Technologiques</h2>
+            </div>
+            <div class="slide-content">
+                <div class="matrix-carousel" id="matrixCarousel">
+                    <button class="carousel-btn carousel-btn-prev" onclick="changeMatrix(-1)">&#9664;</button>
+                    <button class="carousel-btn carousel-btn-next" onclick="changeMatrix(1)">&#9654;</button>
+
+                    <div class="matrix-carousel-container" id="matrixContainer">
+                        <!-- Slide 1: Methodologie -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px;">Methodologie de Choix</h3>
+                            <div class="two-columns" style="gap: 25px;">
+                                <div>
+                                    <h4 style="margin-bottom: 12px;">7 Criteres d'Evaluation</h4>
+                                    <table style="font-size: 0.85em; width: 100%;">
+                                        <thead><tr><th>Critere</th><th>Poids</th><th>Description</th></tr></thead>
+                                        <tbody>
+                                            <tr><td><strong>Fonctionnalites</strong></td><td>25%</td><td>Richesse des services, features cles</td></tr>
+                                            <tr><td><strong>Performance</strong></td><td>20%</td><td>Latence, throughput, benchmarks</td></tr>
+                                            <tr><td><strong>Cout</strong></td><td>15%</td><td>TCO sur 3 ans, licences</td></tr>
+                                            <tr><td><strong>Maturite</strong></td><td>15%</td><td>Stabilite, communaute, support</td></tr>
+                                            <tr><td><strong>Facilite</strong></td><td>10%</td><td>Courbe apprentissage equipe</td></tr>
+                                            <tr><td><strong>Evolutivite</strong></td><td>10%</td><td>Scaling, extensibilite</td></tr>
+                                            <tr><td><strong>Integration</strong></td><td>5%</td><td>Connecteurs, APIs, compatibilite</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 12px;">Notation & Calcul</h4>
+                                    <div class="content-box" style="padding: 15px;">
+                                        <p style="margin-bottom: 10px;"><strong>Echelle:</strong> 1 (faible) a 5 (excellent)</p>
+                                        <p style="margin-bottom: 10px;"><strong>Score:</strong> Somme(Note x Poids)</p>
+                                        <p style="margin-bottom: 15px;"><strong>Seuil:</strong> Score &gt; 4.0 = viable</p>
+                                        <div style="padding: 10px; background: rgba(46, 204, 113, 0.15); border-radius: 8px;">
+                                            <strong>Bonus Souverainete:</strong><br>
+                                            <small>+0.5 pts si hebergeur UE/FR (RGPD)</small>
+                                        </div>
+                                    </div>
+                                    <div class="content-box" style="margin-top: 12px; padding: 12px; background: rgba(52, 152, 219, 0.15);">
+                                        <strong>7 domaines evalues:</strong><br>
+                                        <small>Cloud, BDD, Message Queue, Backend, Frontend, CI/CD, Monitoring</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Cloud Provider -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 12px;">Cloud Provider</h3>
+                            <div style="max-width: 850px; margin: 0 auto;">
+                                <table style="font-size: 0.8em; width: 100%;">
+                                    <thead>
+                                        <tr><th>Critere</th><th>Poids</th><th>AWS</th><th>Azure</th><th>GCP</th><th>OVH</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Fonctionnalites</strong></td><td>25%</td><td>5</td><td>4</td><td>4</td><td>3</td></tr>
+                                        <tr><td><strong>Performance</strong></td><td>20%</td><td>5</td><td>5</td><td>5</td><td>4</td></tr>
+                                        <tr><td><strong>Cout</strong></td><td>15%</td><td>3</td><td>3</td><td>3</td><td>5</td></tr>
+                                        <tr><td><strong>Maturite</strong></td><td>15%</td><td>5</td><td>4</td><td>4</td><td>4</td></tr>
+                                        <tr><td><strong>Facilite</strong></td><td>10%</td><td>3</td><td>3</td><td>3</td><td>5</td></tr>
+                                        <tr><td><strong>Evolutivite</strong></td><td>10%</td><td>5</td><td>5</td><td>5</td><td>4</td></tr>
+                                        <tr><td><strong>Integration</strong></td><td>5%</td><td>5</td><td>4</td><td>4</td><td>4</td></tr>
+                                        <tr style="background: rgba(200,200,200,0.1);"><td><strong>Sous-total</strong></td><td>100%</td><td>4.25</td><td>4.05</td><td>4.05</td><td>4.00</td></tr>
+                                        <tr style="background: rgba(46, 204, 113, 0.15);"><td><strong>Bonus Souverainete</strong></td><td>RGPD</td><td>-</td><td>-</td><td>-</td><td style="color: #2ecc71;"><strong>+0.50</strong></td></tr>
+                                        <tr style="background: rgba(46, 204, 113, 0.25);">
+                                            <td><strong>TOTAL</strong></td><td></td>
+                                            <td>4.25</td><td>4.05</td><td>4.05</td>
+                                            <td class="score-high">4.50</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="margin-top: 12px; text-align: center;">
+                                    <span class="badge badge-success">OVH VPS/Bare Metal</span>
+                                    <span style="margin-left: 10px; font-size: 0.85em;">Souverain RGPD + Datacenters FR = avantage decisif</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Base de Donnees -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 12px;">Base de Donnees</h3>
+                            <div style="max-width: 750px; margin: 0 auto;">
+                                <table style="font-size: 0.85em; width: 100%;">
+                                    <thead>
+                                        <tr><th>Critere</th><th>Poids</th><th>PostgreSQL</th><th>MySQL</th><th>MongoDB</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Fonctionnalites</strong></td><td>25%</td><td>5</td><td>4</td><td>4</td></tr>
+                                        <tr><td><strong>Performance</strong></td><td>20%</td><td>5</td><td>4</td><td>5</td></tr>
+                                        <tr><td><strong>Cout</strong></td><td>15%</td><td>5</td><td>5</td><td>4</td></tr>
+                                        <tr><td><strong>Maturite</strong></td><td>15%</td><td>5</td><td>5</td><td>4</td></tr>
+                                        <tr><td><strong>Facilite</strong></td><td>10%</td><td>4</td><td>5</td><td>4</td></tr>
+                                        <tr><td><strong>Evolutivite</strong></td><td>10%</td><td>5</td><td>4</td><td>5</td></tr>
+                                        <tr><td><strong>Integration</strong></td><td>5%</td><td>5</td><td>5</td><td>4</td></tr>
+                                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                                            <td><strong>TOTAL</strong></td><td>100%</td>
+                                            <td class="score-high">4.85</td><td>4.55</td><td>4.35</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="margin-top: 15px; text-align: center;">
+                                    <span class="badge badge-success">PostgreSQL</span>
+                                    <span style="margin-left: 10px; font-size: 0.85em;">ACID complet - JSON natif - Extensions riches - Open source</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-indicators" id="matrixIndicators"></div>
+                </div>
+
+                <div style="margin-top: 15px; padding: 12px; background: rgba(52, 152, 219, 0.1); border-radius: 10px; font-size: 0.9em;">
+                    <strong>Infrastructure:</strong> OVH VPS/Bare Metal - Simple pour l'equipe - 5-10 serveurs phase 1 - Migration K8s phase 2
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Naviguez avec les boutons</span>
+                <span>Slide 19/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 20: STACK TECHNOLOGIQUE -->
+        <div class="slide" data-slide="20">
+            <div class="slide-header">
+                <div class="slide-number">Slide 20/25</div>
+                <h2>🛠️ Stack Technologique Complète</h2>
+            </div>
+            <div class="slide-content">
+                <table>
+                    <thead>
+                        <tr><th>Couche</th><th>Technologie</th><th>Justification</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Frontend Web</strong></td><td>React + TypeScript</td><td>Écosystème riche</td></tr>
+                        <tr><td><strong>Frontend Mobile</strong></td><td>React Native</td><td>Code partagé</td></tr>
+                        <tr><td><strong>Backend</strong></td><td>Node.js + Express</td><td>Full-stack JS</td></tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Base Données</strong></td><td>PostgreSQL</td><td>Open source, performant (4.85)</td>
+                        </tr>
+                        <tr><td><strong>Cache</strong></td><td>Redis</td><td>Structures riches</td></tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Message Queue</strong></td><td>Kafka + RabbitMQ</td><td>Hybride optimal</td>
+                        </tr>
+                        <tr style="background: rgba(46, 204, 113, 0.2);">
+                            <td><strong>Cloud</strong></td><td>OVH VPS/Bare Metal</td><td>Souverain RGPD (4.30)</td>
+                        </tr>
+                        <tr><td><strong>Orchestration</strong></td><td>Docker + K8s (phase 2)</td><td>Migration progressive</td></tr>
+                        <tr><td><strong>CI/CD</strong></td><td>GitLab CI/CD</td><td>Complet et integre (5.00)</td></tr>
+                        <tr><td><strong>Monitoring</strong></td><td>Prometheus + Grafana</td><td>Open source</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slide-footer">
+                <span>Stack complete justifiee par matrices</span>
+                <span>Slide 20/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 21: POINTS FAIBLES SI (CARROUSEL) -->
+        <div class="slide" data-slide="21">
+            <div class="slide-header">
+                <div class="slide-number">Slide 21/25</div>
+                <h2>🔴 Points Faibles du SI Actuel</h2>
+            </div>
+            <div class="slide-content">
+                <div class="matrix-carousel" id="faiblesCarousel">
+                    <button class="carousel-btn carousel-btn-prev" onclick="changeFaibles(-1)">&#9664;</button>
+                    <button class="carousel-btn carousel-btn-next" onclick="changeFaibles(1)">&#9654;</button>
+
+                    <div class="matrix-carousel-container" id="faiblesContainer">
+                        <!-- Category 1: Technologie & Code -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.3em;">Technologie & Code</h3>
+                            <div class="two-columns" style="gap: 12px; height: auto; max-width: 900px; margin: 0 auto;">
+                                <div class="content-box" style="background: rgba(231, 76, 60, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-critical" style="font-size: 0.85em; padding: 4px 10px;">Critique</span> Technologie obsolete</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Windows Server 2008 R2 hors support</li>
+                                        <li>ASP.NET 2005 - framework abandonne</li>
+                                        <li>Failles de securite non corrigees</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Risque securite majeur
+                                    </div>
+                                </div>
+                                <div class="content-box" style="background: rgba(231, 76, 60, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-critical" style="font-size: 0.85em; padding: 4px 10px;">Critique</span> Code non maintenable</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Patchs sur patchs depuis 15 ans</li>
+                                        <li>0% de couverture de tests</li>
+                                        <li>Couplage fort, pas de modularite</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Cout maintenance x3
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 2: Performance & UX -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.3em;">Performance & UX</h3>
+                            <div class="two-columns" style="gap: 12px; height: auto; max-width: 900px; margin: 0 auto;">
+                                <div class="content-box" style="background: rgba(243, 156, 18, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-high" style="font-size: 0.85em; padding: 4px 10px;">Haute</span> Performance degradee</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Temps de chargement &gt; 5 secondes</li>
+                                        <li>Taux d'abandon: 45% vs 30%</li>
+                                        <li>Pics de charge non geres</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Perte CA -15%
+                                    </div>
+                                </div>
+                                <div class="content-box" style="background: rgba(243, 156, 18, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-high" style="font-size: 0.85em; padding: 4px 10px;">Haute</span> Pas d'app mobile</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>80% du trafic est mobile</li>
+                                        <li>Site non responsive</li>
+                                        <li>Concurrents ont tous une app</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Perte CA -25%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 3: Securite & Conformite -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.3em;">Securite & Conformite</h3>
+                            <div class="two-columns" style="gap: 12px; height: auto; max-width: 900px; margin: 0 auto;">
+                                <div class="content-box" style="background: rgba(231, 76, 60, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-critical" style="font-size: 0.85em; padding: 4px 10px;">Critique</span> Non-conformite RGPD</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Donnees personnelles non chiffrees</li>
+                                        <li>Pas de consentement explicite</li>
+                                        <li>Pas de droit a l'oubli</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Risque:</strong> Amende 4% du CA
+                                    </div>
+                                </div>
+                                <div class="content-box" style="background: rgba(231, 76, 60, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-critical" style="font-size: 0.85em; padding: 4px 10px;">Critique</span> Pas de PCI-DSS</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Paiements non securises</li>
+                                        <li>Taux d'echec: 18% vs 2%</li>
+                                        <li>Risque de fraude eleve</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Risque:</strong> Perte confiance
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 4: Infrastructure & Integration -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.3em;">Infrastructure & Integration</h3>
+                            <div class="two-columns" style="gap: 12px; height: auto; max-width: 900px; margin: 0 auto;">
+                                <div class="content-box" style="background: rgba(243, 156, 18, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-high" style="font-size: 0.85em; padding: 4px 10px;">Haute</span> Mono-hebergeur (SPOF)</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Un seul datacenter</li>
+                                        <li>Pas de redondance</li>
+                                        <li>Derniere panne: 48h d'arret</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Dispo &lt; 99%
+                                    </div>
+                                </div>
+                                <div class="content-box" style="background: rgba(243, 156, 18, 0.15); padding: 16px 18px;">
+                                    <h4 style="font-size: 0.98em; margin-bottom: 8px;"><span class="badge badge-high" style="font-size: 0.85em; padding: 4px 10px;">Haute</span> Sync 1x/jour</h4>
+                                    <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.5;">
+                                        <li>Donnees ERP decalees J-1</li>
+                                        <li>Erreurs de stock frequentes</li>
+                                        <li>Commandes sur produits epuises</li>
+                                    </ul>
+                                    <div style="margin-top: 8px; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.82em;">
+                                        <strong>Impact:</strong> Insatisfaction clients
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 5: SWOT -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.3em;">Analyse SWOT</h3>
+                            <div class="two-columns" style="gap: 10px; height: auto; max-width: 900px; margin: 0 auto;">
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <div class="content-box" style="background: rgba(46, 204, 113, 0.15); padding: 12px 14px;">
+                                        <h4 style="color: #2ecc71; font-size: 0.95em; margin-bottom: 6px;">Forces (S)</h4>
+                                        <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.45;">
+                                            <li>150 restaurants implantes</li>
+                                            <li>80% CA en ligne</li>
+                                            <li>Marque etablie depuis 1992</li>
+                                        </ul>
+                                    </div>
+                                    <div class="content-box" style="background: rgba(231, 76, 60, 0.15); padding: 8px 10px;">
+                                        <h4 style="color: #e74c3c; font-size: 0.95em; margin-bottom: 6px;">Faiblesses (W)</h4>
+                                        <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.45;">
+                                            <li>SI obsolete (ASP.NET 2005)</li>
+                                            <li>Pas d'app mobile native</li>
+                                            <li>Non-conformite RGPD/PCI-DSS</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <div class="content-box" style="background: rgba(52, 152, 219, 0.15); padding: 12px 14px;">
+                                        <h4 style="color: #3498db; font-size: 0.95em; margin-bottom: 6px;">Opportunites (O)</h4>
+                                        <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.45;">
+                                            <li>Croissance marche livraison</li>
+                                            <li>Expansion 500+ restaurants</li>
+                                            <li>Digitalisation franchises</li>
+                                        </ul>
+                                    </div>
+                                    <div class="content-box" style="background: rgba(243, 156, 18, 0.15); padding: 12px 14px;">
+                                        <h4 style="color: #f39c12; font-size: 0.95em; margin-bottom: 6px;">Menaces (T)</h4>
+                                        <ul style="font-size: 0.92em; margin: 0; padding-left: 22px; line-height: 1.45;">
+                                            <li>Concurrents (UberEats...)</li>
+                                            <li>Amende RGPD (4% CA)</li>
+                                            <li>Perte clients (UX degradee)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 6: AMDEC -->
+                        <div class="matrix-slide">
+                            <h3 style="text-align: center; margin-bottom: 8px; font-size: 1.1em;">Analyse AMDEC - Risques</h3>
+                            <div style="max-width: 680px; margin: 0 auto; width: 100%; overflow-x: auto;">
+                                <table style="font-size: 0.7em; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Defaillance</th>
+                                            <th>G</th>
+                                            <th>O</th>
+                                            <th>D</th>
+                                            <th>IPR</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background: rgba(231, 76, 60, 0.2);">
+                                            <td>Faille Windows 2008</td>
+                                            <td>5</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td class="score-high"><strong>60</strong></td>
+                                            <td>Migration OVH</td>
+                                        </tr>
+                                        <tr style="background: rgba(231, 76, 60, 0.2);">
+                                            <td>Non-conformite RGPD</td>
+                                            <td>5</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td class="score-high"><strong>60</strong></td>
+                                            <td>Chiffrement + OAuth2</td>
+                                        </tr>
+                                        <tr style="background: rgba(243, 156, 18, 0.2);">
+                                            <td>Panne hebergeur</td>
+                                            <td>4</td>
+                                            <td>3</td>
+                                            <td>3</td>
+                                            <td><strong>36</strong></td>
+                                            <td>Multi-datacenter</td>
+                                        </tr>
+                                        <tr style="background: rgba(243, 156, 18, 0.2);">
+                                            <td>Echec paiement</td>
+                                            <td>4</td>
+                                            <td>4</td>
+                                            <td>2</td>
+                                            <td><strong>32</strong></td>
+                                            <td>PCI-DSS</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Desync stock ERP</td>
+                                            <td>3</td>
+                                            <td>5</td>
+                                            <td>2</td>
+                                            <td><strong>30</strong></td>
+                                            <td>Event-Driven</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 8px; font-size: 0.7em; display: flex; gap: 15px; justify-content: center; max-width: 680px; margin-left: auto; margin-right: auto;">
+                                <span><strong>G</strong>=Gravite</span>
+                                <span><strong>O</strong>=Occurrence</span>
+                                <span><strong>D</strong>=Detection</span>
+                                <span><strong>IPR</strong>=GxOxD</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-indicators" id="faiblesIndicators"></div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Points faibles identifies et justifies</span>
+                <span>Slide 21/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 22: AXES D'AMELIORATION -->
+        <div class="slide" data-slide="22">
+            <div class="slide-header">
+                <div class="slide-number">Slide 22/25</div>
+                <h2>💡 Axes d'Amélioration Prioritaires</h2>
+            </div>
+            <div class="slide-content">
+                <div class="three-columns">
+                    <div class="content-box" style="background: rgba(231, 76, 60, 0.1);">
+                        <h3>1. Dette Technique</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Modernisation du Socle</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Sortie Windows 2008 (EOL)</li>
+                            <li>Refonte ASP.NET → Node.js</li>
+                            <li>Documentation exhaustive</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="background: rgba(155, 89, 182, 0.1);">
+                        <h3>2. Maitrise & Internalisation</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Souverainete du SI</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Creation pole dev. interne</li>
+                            <li>Fin dependance "boite noire"</li>
+                            <li>Reappropriation savoir-faire</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="background: rgba(46, 204, 113, 0.1);">
+                        <h3>3. Performance & Fiabilite</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Robustesse & Scalabilite</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Synchro ERP Temps Reel</li>
+                            <li>Haute Dispo (SLA 99.9%)</li>
+                            <li>Correction bugs bloquants</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="background: rgba(52, 152, 219, 0.1);">
+                        <h3>4. Experience Utilisateur</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Strategie Omnicanale</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Application Mobile Native</li>
+                            <li>Site Web Responsive</li>
+                            <li>Parcours client fluide</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="background: rgba(241, 196, 15, 0.1);">
+                        <h3>5. Integration & Donnees</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Decloisonnement</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Centralisation Franchises</li>
+                            <li>Fin fichiers Excel isoles</li>
+                            <li>API Unifiee ecosysteme</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="background: rgba(230, 126, 34, 0.1);">
+                        <h3>6. Services Franchises</h3>
+                        <p style="color: #3498db; font-weight: bold;">→ Portail dedie</p>
+                        <ul style="font-size: 0.85em;">
+                            <li>Gestion Commandes/Stocks</li>
+                            <li>Outils Marketing/Promos</li>
+                            <li>Reporting & Analyse</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>6 axes strategiques pour la transformation digitale</span>
+                <span>Slide 22/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 23: ROI -->
+        <div class="slide" data-slide="23">
+            <div class="slide-header">
+                <div class="slide-number">Slide 23/25</div>
+                <h2>💰 ROI et Bénéfices Attendus</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns" style="gap: 25px;">
+                    <div>
+                        <h3 style="margin-bottom: 12px;">Metriques Cles</h3>
+                        <div class="grid-stats" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div class="stat-card" style="padding: 15px;">
+                                <div class="stat-number" style="font-size: 2em;">99.9%</div>
+                                <div class="stat-label" style="font-size: 0.85em;">Disponibilite<br>vs 95%</div>
+                            </div>
+                            <div class="stat-card" style="padding: 15px;">
+                                <div class="stat-number" style="font-size: 2em;">&lt;2s</div>
+                                <div class="stat-label" style="font-size: 0.85em;">Performance<br>vs &gt;5s</div>
+                            </div>
+                            <div class="stat-card" style="padding: 15px;">
+                                <div class="stat-number" style="font-size: 2em;">-30%</div>
+                                <div class="stat-label" style="font-size: 0.85em;">Cout IT<br>sur 3 ans</div>
+                            </div>
+                            <div class="stat-card" style="padding: 15px;">
+                                <div class="stat-number" style="font-size: 2em;">-80%</div>
+                                <div class="stat-label" style="font-size: 0.85em;">Bugs Prod<br>CI/CD</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 12px;">ROI Global</h3>
+                        <div class="content-box" style="padding: 15px;">
+                            <ul style="font-size: 0.9em; line-height: 1.6; margin: 0; padding-left: 22px;">
+                                <li><strong>CA:</strong> +25% (mobile, perf)</li>
+                                <li><strong>Couts IT:</strong> -30%/3ans (cloud)</li>
+                                <li><strong>Maintenance:</strong> -60% (tests, doc)</li>
+                                <li><strong>Pannes:</strong> -90% (monitoring)</li>
+                                <li><strong>TTM:</strong> 5x plus rapide</li>
+                                <li><strong>Satisfaction:</strong> +40%</li>
+                            </ul>
+                        </div>
+                        <div class="content-box" style="margin-top: 12px; padding: 15px; background: rgba(46, 204, 113, 0.2); text-align: center;">
+                            <div class="big-number" style="color: #2ecc71; font-size: 3em; margin: 8px 0;">350%</div>
+                            <p style="font-size: 1.1em; margin: 0;"><strong>ROI sur 3 ans</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Benefices quantifies et ROI demontre</span>
+                <span>Slide 23/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 24: RESUME EXECUTIF -->
+        <div class="slide" data-slide="24">
+            <div class="slide-header">
+                <div class="slide-number">Slide 24/25</div>
+                <h2>Resume Executif</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-columns" style="gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="content-box" style="padding: 14px 18px;">
+                            <h3 style="font-size: 0.95em; margin-bottom: 8px;">Contexte & Enjeux</h3>
+                            <ul style="font-size: 0.9em; margin: 0; line-height: 1.5; padding-left: 18px;">
+                                <li><strong>150 restaurants</strong> FR/BE/LU - <strong>80% CA</strong> en ligne</li>
+                                <li>SI obsolete: ASP.NET 2005 + Windows 2008 (EOL)</li>
+                            </ul>
+                        </div>
+
+                        <div class="content-box" style="padding: 14px 18px; background: rgba(46, 204, 113, 0.2);">
+                            <h3 style="font-size: 0.95em; margin-bottom: 8px;">Architecture Retenue</h3>
+                            <p style="font-size: 0.85em; margin: 0 0 6px 0;">
+                                <strong>Microservices + Hexagonale + Event-Driven</strong>
+                            </p>
+                            <ul style="font-size: 0.88em; margin: 0; line-height: 1.4; padding-left: 18px;">
+                                <li>Score: 23-24/30 vs Monolithique 17/30</li>
+                                <li>Scalable: 150 → 500+ restaurants</li>
+                            </ul>
+                        </div>
+
+                        <div class="content-box" style="padding: 14px 18px;">
+                            <h3 style="font-size: 0.95em; margin-bottom: 8px;">Stack Technologique</h3>
+                            <ul style="font-size: 0.88em; margin: 0; line-height: 1.45; padding-left: 18px;">
+                                <li><strong>Front:</strong> React + React Native</li>
+                                <li><strong>Back:</strong> Node.js + Express</li>
+                                <li><strong>Data:</strong> PostgreSQL + Redis + RabbitMQ</li>
+                                <li><strong>Cloud:</strong> OVH (souverain RGPD)</li>
+                                <li><strong>CI/CD:</strong> GitLab CI/CD</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="grid-stats" style="grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <div class="stat-card" style="padding: 12px;">
+                                <div class="stat-number" style="font-size: 1.7em;">+25%</div>
+                                <div class="stat-label" style="font-size: 0.8em;">CA</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px;">
+                                <div class="stat-number" style="font-size: 1.7em;">-40%</div>
+                                <div class="stat-label" style="font-size: 0.8em;">Couts IT</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px;">
+                                <div class="stat-number" style="font-size: 1.7em;">99.9%</div>
+                                <div class="stat-label" style="font-size: 0.8em;">Dispo</div>
+                            </div>
+                            <div class="stat-card" style="padding: 12px;">
+                                <div class="stat-number" style="font-size: 1.7em;">&lt;2s</div>
+                                <div class="stat-label" style="font-size: 0.8em;">Perf</div>
+                            </div>
+                        </div>
+
+                        <div class="content-box" style="padding: 14px; background: rgba(52, 152, 219, 0.2); text-align: center;">
+                            <div class="big-number" style="font-size: 2.5em; color: #2ecc71; margin: 5px 0;">350%</div>
+                            <p style="font-size: 0.95em; margin: 0;"><strong>ROI sur 3 ans</strong></p>
+                        </div>
+
+                        <div class="content-box" style="padding: 14px 18px;">
+                            <h3 style="font-size: 0.95em; margin-bottom: 8px;">Prochaines Etapes</h3>
+                            <ol style="font-size: 0.88em; margin: 0; line-height: 1.45; padding-left: 22px;">
+                                <li>Validation direction</li>
+                                <li>POC domaine Commande (2 mois)</li>
+                                <li>Developpement incrementiel (12 mois)</li>
+                                <li>Migration progressive franchises</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Good Food 3.0 - Architecture moderne, souveraine et scalable</span>
+                <span>Slide 24/25</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 25: QUESTIONS -->
+        <div class="slide title-slide" data-slide="25">
+            <h1 style="font-size: 3.5em;">Questions ?</h1>
+            <div style="margin-top: 60px; font-size: 1.2em; line-height: 2;">
+                <p><strong>Equipe Projet Good Food 3.0</strong></p>
+                <p style="opacity: 0.8; margin-top: 25px;">CESI MAALSI - INFMAALSIAPC1</p>
+                <p style="margin-top: 40px; font-size: 1em; opacity: 0.7;">
+                    Merci de votre attention !
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&lt;</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&gt;</button>
+        <button class="nav-btn theme-btn" id="themeBtn" onclick="openThemePopup()">Theme</button>
+    </div>
+
+    <!-- Slide Indicators -->
+    <div class="slide-indicator" id="slideIndicator"></div>
+
+    <!-- Theme Popup -->
+    <div class="theme-popup-overlay" id="themePopupOverlay" onclick="closeThemePopup()">
+        <div class="theme-popup" onclick="event.stopPropagation()">
+            <div class="theme-popup-header">
+                <h3>Choisir un Theme</h3>
+                <button class="theme-popup-close" onclick="closeThemePopup()">&times;</button>
+            </div>
+            <div class="theme-options">
+                <div class="theme-option" onclick="selectTheme('dark')">
+                    <div class="theme-name">Sombre</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="color-swatch" style="background: #3498db;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('light')">
+                    <div class="theme-name">Clair</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);"></div>
+                        <div class="color-swatch" style="background: #3498db;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('cesi')">
+                    <div class="theme-name">CESI</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);"></div>
+                        <div class="color-swatch" style="background: #f58220;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('green')">
+                    <div class="theme-name">Eco</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);"></div>
+                        <div class="color-swatch" style="background: #2ecc71;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('sunset')">
+                    <div class="theme-name">Sunset</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></div>
+                        <div class="color-swatch" style="background: #ff6b6b;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('ocean')">
+                    <div class="theme-name">Ocean</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #0c2461 0%, #0abde3 100%);"></div>
+                        <div class="color-swatch" style="background: #00d2d3;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('midnight')">
+                    <div class="theme-name">Midnight</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);"></div>
+                        <div class="color-swatch" style="background: #e94560;"></div>
+                    </div>
+                </div>
+                <div class="theme-option" onclick="selectTheme('corporate')">
+                    <div class="theme-name">Corporate</div>
+                    <div class="theme-colors">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #2c3e50 0%, #4a6fa5 100%);"></div>
+                        <div class="color-swatch" style="background: #2980b9;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zoom Modal -->
+    <div class="zoom-modal" id="zoomModal">
+        <div class="close-zoom" onclick="closeZoom()">✕</div>
+        <div class="zoom-content" id="zoomContent">
+            <img id="zoomImage" src="" alt="Zoomed diagram">
+        </div>
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+            <button class="zoom-btn" onclick="resetZoom()" title="Reset">⟲</button>
+            <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">-</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -80,7 +80,7 @@ end note
 
 footer Architecture TO-BE - Solution moderne et évolutive | Good Food 3.0
 
-UpdateElementStyle("modern", $bgColor="#B3FFB3", $borderColor="#00AA00")
+UpdateElementStyle("modern", $bgColor="#D4EDDA", $fontColor="#155724", $borderColor="#28A745")
 
 @enduml
 

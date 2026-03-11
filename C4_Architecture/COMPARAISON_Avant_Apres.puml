@@ -53,8 +53,8 @@ end note
 
 footer Comparaison AS-IS vs TO-BE | Good Food - Impact de la transformation
 
-UpdateElementStyle("old", $bgColor="#FFB3B3", $borderColor="#CC0000")
-UpdateElementStyle("new", $bgColor="#B3FFB3", $borderColor="#00AA00")
+UpdateElementStyle("old", $bgColor="#F8D7DA", $fontColor="#721C24", $borderColor="#DC3545")
+UpdateElementStyle("new", $bgColor="#D4EDDA", $fontColor="#155724", $borderColor="#28A745")
 
 @enduml
 

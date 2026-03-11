@@ -1,0 +1,157 @@
+{
+  "presentation": {
+    "title": "Architecture Good Food 3.0",
+    "subtitle": "Projet Collaboratif - Architecture Logicielle",
+    "institution": "CESI MAALSI - INFMAALSIAPC1",
+    "footer": "Good Food 3.0 - Architecture Logicielle | CESI MAALSI",
+    "totalSlides": 25
+  },
+  "slides": [
+    {
+      "id": 1,
+      "type": "title",
+      "title": "Architecture Good Food 3.0",
+      "subtitle": "Projet Collaboratif - Architecture Logicielle"
+    },
+    {
+      "id": 2,
+      "type": "diagram-content",
+      "title": "📊 Analyse de l'Existant (AS-IS)",
+      "diagram": "slide2-as-is-contexte.png",
+      "diagramAlt": "Architecture AS-IS Contexte"
+    },
+    {
+      "id": 3,
+      "type": "diagram-fullscreen",
+      "title": "🏗️ Architecture Technique Actuelle (N2)",
+      "diagram": "slide3-as-is-architecture.png",
+      "diagramAlt": "Architecture AS-IS N2"
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "🎯 Exigences Non-Fonctionnelles"
+    },
+    {
+      "id": 5,
+      "type": "content",
+      "title": "🎨 Démarche de Conception Architecture"
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "⚖️ Comparaison des Styles Architecturaux"
+    },
+    {
+      "id": 7,
+      "type": "content",
+      "title": "✅ Justification des Choix Architecturaux"
+    },
+    {
+      "id": 8,
+      "type": "diagram-fullscreen",
+      "title": "🎯 Architecture Cible (TO-BE) - Contexte",
+      "diagram": "slide8-to-be-contexte.png",
+      "diagramAlt": "Architecture TO-BE Contexte"
+    },
+    {
+      "id": 9,
+      "type": "diagram-fullscreen",
+      "title": "⬡ Architecture Hexagonale Détaillée (N2)",
+      "diagram": "slide9-hexagonale.png",
+      "diagramAlt": "Architecture Hexagonale"
+    },
+    {
+      "id": 10,
+      "type": "diagram-fullscreen",
+      "title": "🛒 Détail Service Commande (N3)",
+      "diagram": "slide10-detail-commande.png",
+      "diagramAlt": "Détail Service Commande"
+    },
+    {
+      "id": 11,
+      "type": "diagram-fullscreen",
+      "title": "👤 Vue Client - Expérience Utilisateur",
+      "diagram": "slide11-persona-client.png",
+      "diagramAlt": "Persona Client"
+    },
+    {
+      "id": 12,
+      "type": "diagram-fullscreen",
+      "title": "🏪 Vue Franchisé - Gestion Restaurant",
+      "diagram": "slide12-persona-franchise.png",
+      "diagramAlt": "Persona Franchisé"
+    },
+    {
+      "id": 13,
+      "type": "diagram-fullscreen",
+      "title": "🚴 Vue Livreur - Livraison Sécurisée",
+      "diagram": "slide13-persona-livreur.png",
+      "diagramAlt": "Persona Livreur"
+    },
+    {
+      "id": 14,
+      "type": "diagram-fullscreen",
+      "title": "👨‍💼 Vue Administrateur - Supervision Réseau",
+      "diagram": "slide14-persona-admin.png",
+      "diagramAlt": "Persona Administrateur"
+    },
+    {
+      "id": 15,
+      "type": "diagram-fullscreen",
+      "title": "🔄 Comparaison Avant/Après",
+      "diagram": "slide15-comparaison.png",
+      "diagramAlt": "Comparaison Avant/Après"
+    },
+    {
+      "id": 16,
+      "type": "content",
+      "title": "🔧 Matrice de Choix Technologiques"
+    },
+    {
+      "id": 17,
+      "type": "table",
+      "title": "🛠️ Stack Technologique Complète"
+    },
+    {
+      "id": 18,
+      "type": "table",
+      "title": "🔴 Points Faibles du SI Actuel"
+    },
+    {
+      "id": 19,
+      "type": "content",
+      "title": "💡 Axes d'Amélioration Prioritaires"
+    },
+    {
+      "id": 20,
+      "type": "content",
+      "title": "💰 ROI et Bénéfices Attendus"
+    },
+    {
+      "id": 21,
+      "type": "content",
+      "title": "👥 Organisation de l'Équipe"
+    },
+    {
+      "id": 22,
+      "type": "content",
+      "title": "💪 Points Forts de l'Équipe"
+    },
+    {
+      "id": 23,
+      "type": "content",
+      "title": "🎯 Axes d'Amélioration de l'Équipe"
+    },
+    {
+      "id": 24,
+      "type": "content",
+      "title": "📊 Résumé Exécutif"
+    },
+    {
+      "id": 25,
+      "type": "end",
+      "title": "Questions ?"
+    }
+  ]
+}

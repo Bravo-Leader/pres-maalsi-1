@@ -1,7 +1,0 @@
-services:
-  good-food-v2:
-    build: ./presentation
-    container_name: good-food-v2
-    restart: unless-stopped
-    ports:
-      - "8084:80"
